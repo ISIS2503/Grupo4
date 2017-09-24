@@ -1,7 +1,7 @@
 var bodyParser = require('body-parser'); 	// get body-parser
 var User       = require('../../models/User');
 var jwt        = require('jsonwebtoken');
-var config     = require('../../config');
+var config     = require('../../../config');
 
 // super secret for creating tokens
 var superSecret = config.secret;
@@ -9,33 +9,6 @@ var superSecret = config.secret;
 module.exports = function(app, express) {
 
 	var apiRouter = express.Router();
-
-	// route to generate sample user
-	apiRouter.post('/sample', function(req, res) {
-
-		// look for the user named chris
-		User.findOne({ 'username': 'chris' }, function(err, user) {
-
-			// if there is no chris user, create one
-			if (!user) {
-				var sampleUser = new User();
-
-				sampleUser.name = 'Chris';
-				sampleUser.username = 'chris';
-				sampleUser.password = 'supersecret';
-
-				sampleUser.save();
-			} else {
-				console.log(user);
-
-				// if there is a chris, update his password
-				user.password = 'supersecret';
-				user.save();
-			}
-
-		});
-
-	});
 
 	// route to authenticate a user (POST http://localhost:8080/api/authenticate)
 	apiRouter.post('/authenticate', function(req, res) {
@@ -125,15 +98,11 @@ module.exports = function(app, express) {
 	  }
 	});
 
-	// test route to make sure everything is working
-	// accessed at GET http://localhost:8080/api
-	apiRouter.get('/', function(req, res) {
-		res.json({ message: 'hooray! welcome to our api!' });
-	});
+
 
 	// on routes that end in /users
 	// ----------------------------------------------------
-	apiRouter.route('/users')
+	apiRouter.route('/')
 
 		// create a user (accessed at POST http://localhost:8080/users)
 		.post(function(req, res) {
@@ -171,7 +140,7 @@ module.exports = function(app, express) {
 
 	// on routes that end in /users/:user_id
 	// ----------------------------------------------------
-	apiRouter.route('/users/:user_id')
+	apiRouter.route('/:user_id')
 
 		// get the user with that id
 		.get(function(req, res) {

@@ -1,7 +1,7 @@
 var bodyParser = require('body-parser'); 	// get body-parser
 var Dash       = require('../../models/Dash');
 var jwt        = require('jsonwebtoken');
-var config     = require('../../config');
+var config     = require('../../../config');
 
 // super secret for creating tokens
 var superSecret = config.secret;
