@@ -6,6 +6,10 @@ var config     = require('../../../config');
 // super secret for creating tokens
 var superSecret = config.secret;
 
+module.exports = function(app, express) {
+
+	var apiRouter = express.Router();
+
 	// route middleware to verify a token
 	apiRouter.use(function(req, res, next) {
 		// do logging
@@ -43,17 +47,6 @@ var superSecret = config.secret;
    	 	});
 
 	  }
-	});
-
-	// test route to make sure everything is working
-	// accessed at GET http://localhost:8080/api
-	apiRouter.get('/', function(req, res) {
-		res.json({ message: 'hooray! welcome to our api!' });
-	});
-
-	// api endpoint to get user information
-	apiRouter.get('/me', function(req, res) {
-		res.send(req.decoded);
 	});
 
 	return apiRouter;
