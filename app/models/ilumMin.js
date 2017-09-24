@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // user schema
- var IlumMinSchema = new Schema({
+ var IluminationMinSchema = new Schema({
  _id: String,
  payload:{
  	protime: String,
@@ -17,8 +17,5 @@ var Schema = mongoose.Schema;
  topic: String,
  _msgid: String
  });
-
-
-
  // return the model
- module.exports = mongoose.model('IlumMin', IlumMinSchema);
+ module.exports = mongoose.model('IluminationMin', IluminationMinSchema);
