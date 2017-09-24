@@ -1,122 +1,36 @@
 angular.module('ubicacionService', [])
 
-// ===================================================
-// auth factory to login and get information
-// inject $http for communicating with the API
-// inject $q to return promise objects
-// inject AuthToken to manage tokens
-// ===================================================
-.factory('Auth', function($http, $q, AuthToken) {
+.factory('Ubicacion', function($http) {
 
-	// create auth factory object
-	var authFactory = {};
+	// create a new object
+	var ubicacionFactory = {};
 
-	// log a user in
-	authFactory.login = function(username, password) {
-
-		// return the promise object and its data
-		return $http.post('/api/authenticate', {
-			username: username,
-			password: password
-		})
-			.success(function(data) {
-				AuthToken.setToken(data.token);
-				return data;
-			});
+	// get a single ubicacion
+	ubicacionFactory.get = function(id) {
+		return $http.get('/ubicaciones/' + id);
 	};
 
-	// log a user out by clearing the token
-	authFactory.logout = function() {
-		// clear the token
-		AuthToken.setToken();
+	// get all ubicaciones
+	ubicacionFactory.all = function() {
+		return $http.get('/ubicaciones/');
 	};
 
-	// check if a user is logged in
-	// checks if there is a local token
-	authFactory.isLoggedIn = function() {
-		if (AuthToken.getToken())
-			return true;
-		else
-			return false;
+	// create a ubicacion
+	ubicacionFactory.create = function(ubicacionData) {
+		return $http.post('/ubicaciones/', ubicacionData);
 	};
 
-	// get the logged in user
-	authFactory.getUser = function() {
-		if (AuthToken.getToken())
-			return $http.get('/api/me', { cache: true });
-		else
-			return $q.reject({ message: 'User has no token.' });
+	// update a ubicacion
+	ubicacionFactory.update = function(id, ubicacionData) {
+		return $http.put('/ubicaciones/' + id, ubicacionData);
 	};
 
-	authFactory.createSampleUser = function() {
-		$http.post('/api/sample');
+	// delete a ubicacion
+	ubicacionFactory.delete = function(id) {
+		return $http.delete('/ubicaciones/' + id);
 	};
 
-	// return auth factory object
-	return authFactory;
-
-})
-
-// ===================================================
-// factory for handling tokens
-// inject $window to store token client-side
-// ===================================================
-.factory('AuthToken', function($window) {
-
-	var authTokenFactory = {};
-
-	// get the token out of local storage
-	authTokenFactory.getToken = function() {
-		return $window.localStorage.getItem('token');
-	};
-
-	// function to set token or clear token
-	// if a token is passed, set the token
-	// if there is no token, clear it from local storage
-	authTokenFactory.setToken = function(token) {
-		if (token)
-			$window.localStorage.setItem('token', token);
-	 	else
-			$window.localStorage.removeItem('token');
-	};
-
-	return authTokenFactory;
-
-})
-
-// ===================================================
-// application configuration to integrate token into requests
-// ===================================================
-.factory('AuthInterceptor', function($q, $location, AuthToken) {
-
-	var interceptorFactory = {};
-
-	// this will happen on all HTTP requests
-	interceptorFactory.request = function(config) {
-
-		// grab the token
-		var token = AuthToken.getToken();
-
-		// if the token exists, add it to the header as x-access-token
-		if (token)
-			config.headers['x-access-token'] = token;
-
-		return config;
-	};
-
-	// happens on response errors
-	interceptorFactory.responseError = function(response) {
-
-		// if our server returns a 403 forbidden response
-		if (response.status == 403) {
-			AuthToken.setToken();
-			$location.path('/login');
-		}
-
-		// return the errors from the server as a promise
-		return $q.reject(response);
-	};
-
-	return interceptorFactory;
+	// return our entire ubicacionFactory object
+	return ubicacionFactory;
 
 });

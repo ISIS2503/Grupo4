@@ -1,37 +1,37 @@
-angular.module('userCtrl', ['userService'])
+angular.module('microCtrl', ['microService'])
 
-.controller('userController', function(User) {
+.controller('micro', function(Micro) {
 
 	var vm = this;
 
 	// set a processing variable to show loading things
 	vm.processing = true;
 
-	// grab all the users at page load
-	User.all()
+	// grab all the micros at page load
+	Micro.all()
 		.success(function(data) {
 
-			// when all the users come back, remove the processing variable
+			// when all the micros come back, remove the processing variable
 			vm.processing = false;
 
-			// bind the users that come back to vm.users
-			vm.users = data;
+			// bind the micros that come back to vm.micros
+			vm.micros = data;
 		});
 
-	// function to delete a user
-	vm.deleteUser = function(id) {
+	// function to delete a micro
+	vm.deleteMicro = function(id) {
 		vm.processing = true;
 
-		User.delete(id)
+		Micro.delete(id)
 			.success(function(data) {
 
-				// get all users to update the table
+				// get all micros to update the table
 				// you can also set up your api
-				// to return the list of users with the delete call
-				User.all()
+				// to return the list of micros with the delete call
+				Micro.all()
 					.success(function(data) {
 						vm.processing = false;
-						vm.users = data;
+						vm.micros = data;
 					});
 
 			});
@@ -39,8 +39,8 @@ angular.module('userCtrl', ['userService'])
 
 })
 
-// controller applied to user creation page
-.controller('userCreateController', function(User) {
+// controller applied to micro creation page
+.controller('microCreateController', function(Micro) {
 
 	var vm = this;
 
@@ -48,16 +48,16 @@ angular.module('userCtrl', ['userService'])
 	// differentiates between create or edit pages
 	vm.type = 'create';
 
-	// function to create a user
-	vm.saveUser = function() {
+	// function to create a micro
+	vm.saveMicro = function() {
 		vm.processing = true;
 		vm.message = '';
 
-		// use the create function in the userService
-		User.create(vm.userData)
+		// use the create function in the microService
+		Micro.create(vm.microData)
 			.success(function(data) {
 				vm.processing = false;
-				vm.userData = {};
+				vm.microData = {};
 				vm.message = data.message;
 			});
 
@@ -65,8 +65,8 @@ angular.module('userCtrl', ['userService'])
 
 })
 
-// controller applied to user edit page
-.controller('userEditController', function($routeParams, User) {
+// controller applied to micro edit page
+.controller('microEditController', function($routeParams, Micro) {
 
 	var vm = this;
 
@@ -74,25 +74,25 @@ angular.module('userCtrl', ['userService'])
 	// differentiates between create or edit pages
 	vm.type = 'edit';
 
-	// get the user data for the user you want to edit
+	// get the micro data for the micro you want to edit
 	// $routeParams is the way we grab data from the URL
-	User.get($routeParams.user_id)
+	Micro.get($routeParams.micro_id)
 		.success(function(data) {
-			vm.userData = data;
+			vm.microData = data;
 		});
 
-	// function to save the user
-	vm.saveUser = function() {
+	// function to save the micro
+	vm.saveMicro = function() {
 		vm.processing = true;
 		vm.message = '';
 
-		// call the userService function to update
-		User.update($routeParams.user_id, vm.userData)
+		// call the microService function to update
+		Micro.update($routeParams.micro_id, vm.microData)
 			.success(function(data) {
 				vm.processing = false;
 
 				// clear the form
-				vm.userData = {};
+				vm.microData = {};
 
 				// bind the message from our API to vm.message
 				vm.message = data.message;

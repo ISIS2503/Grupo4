@@ -1,4 +1,4 @@
-angular.module('usuarioService', [])
+angular.module('userService', [])
 
 // ===================================================
 // auth factory to login and get information

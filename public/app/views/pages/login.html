@@ -6,12 +6,12 @@
 		<form ng-submit="login.doLogin()">
 
 			<div class="form-group">
-				<label>Username</label>
+				<label>Usuario</label>
 				<input type="text" class="form-control" ng-model="login.loginData.username">
 			</div>
 
 			<div class="form-group">
-				<label>Password</label>
+				<label>Contraseña</label>
 				<input type="password" class="form-control" ng-model="login.loginData.password">
 			</div>
 
@@ -20,7 +20,7 @@
 			</div>
 
 			<button type="submit" class="btn btn-block btn-primary">
-				<span ng-if="!login.processing">Login</span>
+				<span ng-if="!login.processing">Acceder</span>
 				<span ng-if="login.processing" class="spinner"><span class="glyphicon glyphicon-repeat spinner"></span></span>
 			</button>
 

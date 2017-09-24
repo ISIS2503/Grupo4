@@ -1,37 +1,37 @@
-angular.module('userCtrl', ['userService'])
+angular.module('reporteCtrl', ['reporteService'])
 
-.controller('userController', function(User) {
+.controller('reporteController', function(Reporte) {
 
 	var vm = this;
 
 	// set a processing variable to show loading things
 	vm.processing = true;
 
-	// grab all the users at page load
-	User.all()
+	// grab all the reportes at page load
+	Reporte.all()
 		.success(function(data) {
 
-			// when all the users come back, remove the processing variable
+			// when all the reportes come back, remove the processing variable
 			vm.processing = false;
 
-			// bind the users that come back to vm.users
-			vm.users = data;
+			// bind the reportes that come back to vm.reportes
+			vm.reportes = data;
 		});
 
-	// function to delete a user
-	vm.deleteUser = function(id) {
+	// function to delete a reporte
+	vm.deleteReporte = function(id) {
 		vm.processing = true;
 
-		User.delete(id)
+		Reporte.delete(id)
 			.success(function(data) {
 
-				// get all users to update the table
+				// get all reportes to update the table
 				// you can also set up your api
-				// to return the list of users with the delete call
-				User.all()
+				// to return the list of reportes with the delete call
+				Reporte.all()
 					.success(function(data) {
 						vm.processing = false;
-						vm.users = data;
+						vm.reportes = data;
 					});
 
 			});
@@ -39,8 +39,8 @@ angular.module('userCtrl', ['userService'])
 
 })
 
-// controller applied to user creation page
-.controller('userCreateController', function(User) {
+// controller applied to reporte creation page
+.controller('reporteCreateController', function(Reporte) {
 
 	var vm = this;
 
@@ -48,16 +48,16 @@ angular.module('userCtrl', ['userService'])
 	// differentiates between create or edit pages
 	vm.type = 'create';
 
-	// function to create a user
-	vm.saveUser = function() {
+	// function to create a reporte
+	vm.saveReporte = function() {
 		vm.processing = true;
 		vm.message = '';
 
-		// use the create function in the userService
-		User.create(vm.userData)
+		// use the create function in the reporteService
+		Reporte.create(vm.reporteData)
 			.success(function(data) {
 				vm.processing = false;
-				vm.userData = {};
+				vm.reporteData = {};
 				vm.message = data.message;
 			});
 
@@ -65,8 +65,8 @@ angular.module('userCtrl', ['userService'])
 
 })
 
-// controller applied to user edit page
-.controller('userEditController', function($routeParams, User) {
+// controller applied to reporte edit page
+.controller('reporteEditController', function($routeParams, Reporte) {
 
 	var vm = this;
 
@@ -74,25 +74,25 @@ angular.module('userCtrl', ['userService'])
 	// differentiates between create or edit pages
 	vm.type = 'edit';
 
-	// get the user data for the user you want to edit
+	// get the reporte data for the reporte you want to edit
 	// $routeParams is the way we grab data from the URL
-	User.get($routeParams.user_id)
+	Reporte.get($routeParams.reporte_id)
 		.success(function(data) {
-			vm.userData = data;
+			vm.reporteData = data;
 		});
 
-	// function to save the user
-	vm.saveUser = function() {
+	// function to save the reporte
+	vm.saveReporte = function() {
 		vm.processing = true;
 		vm.message = '';
 
-		// call the userService function to update
-		User.update($routeParams.user_id, vm.userData)
+		// call the reporteService function to update
+		Reporte.update($routeParams.reporte_id, vm.reporteData)
 			.success(function(data) {
 				vm.processing = false;
 
 				// clear the form
-				vm.userData = {};
+				vm.reporteData = {};
 
 				// bind the message from our API to vm.message
 				vm.message = data.message;
