@@ -4,7 +4,9 @@ var bcrypt 		 = require('bcrypt-nodejs');
 
 // user schema
 var AlertaSchema   = new Schema({
-	tiempoEnUso: { type: String, required: true}
+	tipoAlerta: { type: String, required: true},
+	activa: { type: String, required: true},
+	fecha: { type: String, required: true}
 });
 
 module.exports = mongoose.model('Alerta', AlertaSchema);

@@ -4,7 +4,12 @@ var bcrypt 		 = require('bcrypt-nodejs');
 
 // user schema
 var SensorSchema   = new Schema({
-	tiempoEnUso: { type: String, required: true}
+	unidadMedida: { type: String, required: true},
+	variacion: { type: String, required: true},
+	frecuencia: { type: String, required: true},
+	valorMin: { type: String, required: true},
+	valorMax: { type: String, required: true},
+	tipoSensor: { type: String, required: true}
 });
 
 module.exports = mongoose.model('Sensor', SensorSchema);
