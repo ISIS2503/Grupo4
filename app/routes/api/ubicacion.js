@@ -1,5 +1,5 @@
 var bodyParser = require('body-parser'); 	// get body-parser
-var User       = require('../models/user');
+var Ubicacion       = require('../../models/Ubicacion');
 var jwt        = require('jsonwebtoken');
 var config     = require('../../config');
 

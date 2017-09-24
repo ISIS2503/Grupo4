@@ -38,8 +38,29 @@ app.use(express.static(__dirname + '/public'));
 // ====================================
 
 // API ROUTES ------------------------
-var apiRoutes = require('./app/routes/api')(app, express);
-app.use('/api', apiRoutes);
+var apiRoutesUser = require('./app/routes/api/usuario')(app, express);
+app.use('/usuarios', apiRoutesUser);
+
+var apiRoutesActuador = require('./app/routes/api/actuadores')(app, express);
+app.use('/actuadores', apiRoutesActuador);
+
+var apiRoutesUbicacion = require('./app/routes/api/ubicacion')(app, express);
+app.use('/ubicaciones', apiRoutesUbicacion);
+
+var apiRoutesMicro = require('./app/routes/api/microcontrolador')(app, express);
+app.use('/micros', apiRoutesMicro);
+
+var apiRoutesAlerta = require('./app/routes/api/alerta')(app, express);
+app.use('/alertas', apiRoutesAlerta);
+
+var apiRoutesReporte = require('./app/routes/api/reporte')(app, express);
+app.use('/reportes', apiRoutesReporte);
+
+var apiRoutesSensor = require('./app/routes/api/sensor')(app, express);
+app.use('/sensores', apiRoutesSensor);
+
+var apiRoutesDash = require('./app/routes/api/tableroControl')(app, express);
+app.use('/dashboard', apiRoutesDash);
 
 // MAIN CATCHALL ROUTE ---------------
 // SEND USERS TO FRONTEND ------------
