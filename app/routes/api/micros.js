@@ -1,5 +1,5 @@
 var bodyParser = require('body-parser'); 	// get body-parser
-var Ubicacion       = require('../../models/Ubicacion');
+var Micro       = require('../../models/Micro');
 var jwt        = require('jsonwebtoken');
 var config     = require('../../../config');
 
@@ -49,88 +49,80 @@ module.exports = function(app, express) {
 	  // }
 	});
 
-
-
-	// on routes that end in /ubicaciones
+	// on routes that end in /micros
 	// ----------------------------------------------------
 	apiRouter.route('/')
 
-		// create a ubicacion (accessed at POST http://localhost:8080/ubicaciones)
+		// create a micro (accessed at POST http://localhost:8080/micros)
 		.post(function(req, res) {
 
-			var ubicacion = new Ubicacion();		// create a new instance of the Ubicacion model
-			ubicacion.area = req.body.area;  // (comes from the request)
-			ubicacion.nivel = req.body.nivel;  // (comes from the request)
+			var micro = new Micro();		// create a new instance of the Micro model
 
-			ubicacion.save(function(err) {
+			micro.save(function(err) {
 				if (err) {
 					// duplicate entry
 					if (err.code == 11000)
-						return res.json({ success: false, message: 'Ya existe esa ubicación.'});
+						return res.json({ success: false, message: 'Ese micro ya existe.'});
 					else
 						return res.send(err);
 				}
 
 				// return a message
-				res.json({ message: 'Ubicación creada!' });
+				res.json({ message: '¡Micro creado!' });
 			});
 
 		})
 
-		// get all the ubicaciones (accessed at GET http://localhost:8080/api/ubicaciones)
+		// get all the micros (accessed at GET http://localhost:8080/api/micros)
 		.get(function(req, res) {
 
-			Ubicacion.find({}, function(err, ubicaciones) {
+			Micro.find({}, function(err, micros) {
 				if (err) res.send(err);
 
-				// return the ubicaciones
-				res.json(ubicaciones);
+				// return the micros
+				res.json(micros);
 			});
 		});
 
-	// on routes that end in /ubicaciones/:ubicacion_id
+	// on routes that end in /micros/:micro_id
 	// ----------------------------------------------------
-	apiRouter.route('/:ubicacion_id')
+	apiRouter.route('/:micro_id')
 
-		// get the ubicacion with that id
+		// get the micro with that id
 		.get(function(req, res) {
-			Ubicacion.findById(req.params.ubicacion_id, function(err, ubicacion) {
+			Micro.findById(req.params.micro_id, function(err, micro) {
 				if (err) res.send(err);
 
-				// return that ubicacion
-				res.json(ubicacion);
+				// return that micro
+				res.json(micro);
 			});
 		})
 
-		// update the ubicacion with this id
+		// update the micro with this id
 		.put(function(req, res) {
-			Ubicacion.findById(req.params.ubicacion_id, function(err, ubicacion) {
+			Micro.findById(req.params.micro_id, function(err, micro) {
 
 				if (err) res.send(err);
 
-				// set the new ubicacion information if it exists in the request
-				if (req.body.area) ubicacion.area = req.body.area;
-				if (req.body.nivel) ubicacion.nivel = req.body.nivel;
-
-				// save the ubicacion
-				ubicacion.save(function(err) {
+				// save the micro
+				micro.save(function(err) {
 					if (err) res.send(err);
 
 					// return a message
-					res.json({ message: 'Ubicación actualizada!' });
+					res.json({ message: '¡Micro actualizado!' });
 				});
 
 			});
 		})
 
-		// delete the ubicacion with this id
+		// delete the micro with this id
 		.delete(function(req, res) {
-			Ubicacion.remove({
-				_id: req.params.ubicacion_id
-			}, function(err, ubicacion) {
+			Micro.remove({
+				_id: req.params.micro_id
+			}, function(err, micro) {
 				if (err) res.send(err);
 
-				res.json({ message: 'Successfully deleted' });
+				res.json({ message: 'Successfully deleted.' });
 			});
 		});
 

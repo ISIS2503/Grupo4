@@ -43,18 +43,15 @@ app.use('/users', apiRoutesUser);
 
 var apiRoutesActuador = require('./app/routes/api/actuadores')(app, express);
 app.use('/actuadores', apiRoutesActuador);
-//
+
 var apiRoutesUbicacion = require('./app/routes/api/ubicacion')(app, express);
 app.use('/ubicaciones', apiRoutesUbicacion);
 
-var apiRoutesAlerta = require('./app/routes/api/alerta')(app, express);
-app.use('/alertas', apiRoutesAlerta);
-
-var apiRoutesReporte = require('./app/routes/api/reporte')(app, express);
-app.use('/reportes', apiRoutesReporte);
-
 var apiRoutesSensor = require('./app/routes/api/sensor')(app, express);
 app.use('/sensores', apiRoutesSensor);
+
+var apiRoutesMicros = require('./app/routes/api/micros')(app, express);
+app.use('/micros', apiRoutesSensor);
 
 var apiRoutesDash = require('./app/routes/api/tableroControl')(app, express);
 app.use('/dashboard', apiRoutesDash);
