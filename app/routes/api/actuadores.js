@@ -49,17 +49,86 @@ module.exports = function(app, express) {
 	  }
 	});
 
-	// test route to make sure everything is working
-	// accessed at GET http://localhost:8080/api
-	apiRouter.get('/', function(req, res) {
-		res.json({ message: 'hooray! welcome to our api!' });
-	});
+	// on routes that end in /actuadores
+	// ----------------------------------------------------
+	apiRouter.route('/')
 
-	
-	// api endpoint to get user information
-	apiRouter.get('/me', function(req, res) {
-		res.send(req.decoded);
-	});
+		// create a actuador (accessed at POST http://localhost:8080/actuadores)
+		.post(function(req, res) {
+
+			var actuador = new Actuador();		// create a new instance of the Actuador model
+			actuador.tiempoEnUso = req.body.tiempoEnUso;
+
+			actuador.save(function(err) {
+				if (err) {
+					// duplicate entry
+					if (err.code == 11000)
+						return res.json({ success: false, message: 'Ese actuador ya existe.'});
+					else
+						return res.send(err);
+				}
+
+				// return a message
+				res.json({ message: '¡Actuador creado!' });
+			});
+
+		})
+
+		// get all the actuadores (accessed at GET http://localhost:8080/api/actuadores)
+		.get(function(req, res) {
+
+			Actuador.find({}, function(err, actuadores) {
+				if (err) res.send(err);
+
+				// return the actuadores
+				res.json(actuadores);
+			});
+		});
+
+	// on routes that end in /actuadores/:actuador_id
+	// ----------------------------------------------------
+	apiRouter.route('/:actuador_id')
+
+		// get the actuador with that id
+		.get(function(req, res) {
+			Actuador.findById(req.params.actuador_id, function(err, actuador) {
+				if (err) res.send(err);
+
+				// return that actuador
+				res.json(actuador);
+			});
+		})
+
+		// update the actuador with this id
+		.put(function(req, res) {
+			Actuador.findById(req.params.actuador_id, function(err, actuador) {
+
+				if (err) res.send(err);
+
+				// set the new actuador information if it exists in the request
+				if(req.body.tiempoEnUso) actuador.tiempoEnUso = req.body.tiempoEnUso;
+
+				// save the actuador
+				actuador.save(function(err) {
+					if (err) res.send(err);
+
+					// return a message
+					res.json({ message: '¡Actuador actualizado!' });
+				});
+
+			});
+		})
+
+		// delete the actuador with this id
+		.delete(function(req, res) {
+			Actuador.remove({
+				_id: req.params.actuador_id
+			}, function(err, actuador) {
+				if (err) res.send(err);
+
+				res.json({ message: 'Successfully deleted.' });
+			});
+		});
 
 	return apiRouter;
 };

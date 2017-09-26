@@ -49,16 +49,90 @@ module.exports = function(app, express) {
 	  }
 	});
 
-	// test route to make sure everything is working
-	// accessed at GET http://localhost:8080/api
-	apiRouter.get('/', function(req, res) {
-		res.json({ message: 'hooray! welcome to our api!' });
-	});
 
-	// api endpoint to get user information
-	apiRouter.get('/me', function(req, res) {
-		res.send(req.decoded);
-	});
+
+	// on routes that end in /ubicaciones
+	// ----------------------------------------------------
+	apiRouter.route('/')
+
+		// create a ubicacion (accessed at POST http://localhost:8080/ubicaciones)
+		.post(function(req, res) {
+
+			var ubicacion = new Ubicacion();		// create a new instance of the Ubicacion model
+			ubicacion.area = req.body.area;  // (comes from the request)
+			ubicacion.nivel = req.body.nivel;  // (comes from the request)
+
+			ubicacion.save(function(err) {
+				if (err) {
+					// duplicate entry
+					if (err.code == 11000)
+						return res.json({ success: false, message: 'Ya existe esa ubicación.'});
+					else
+						return res.send(err);
+				}
+
+				// return a message
+				res.json({ message: 'Ubicación creada!' });
+			});
+
+		})
+
+		// get all the ubicaciones (accessed at GET http://localhost:8080/api/ubicaciones)
+		.get(function(req, res) {
+
+			Ubicacion.find({}, function(err, ubicaciones) {
+				if (err) res.send(err);
+
+				// return the ubicaciones
+				res.json(ubicaciones);
+			});
+		});
+
+	// on routes that end in /ubicaciones/:ubicacion_id
+	// ----------------------------------------------------
+	apiRouter.route('/:ubicacion_id')
+
+		// get the ubicacion with that id
+		.get(function(req, res) {
+			Ubicacion.findById(req.params.ubicacion_id, function(err, ubicacion) {
+				if (err) res.send(err);
+
+				// return that ubicacion
+				res.json(ubicacion);
+			});
+		})
+
+		// update the ubicacion with this id
+		.put(function(req, res) {
+			Ubicacion.findById(req.params.ubicacion_id, function(err, ubicacion) {
+
+				if (err) res.send(err);
+
+				// set the new ubicacion information if it exists in the request
+				if (req.body.area) ubicacion.area = req.body.area;
+				if (req.body.nivel) ubicacion.nivel = req.body.nivel;
+
+				// save the ubicacion
+				ubicacion.save(function(err) {
+					if (err) res.send(err);
+
+					// return a message
+					res.json({ message: 'Ubicación actualizada!' });
+				});
+
+			});
+		})
+
+		// delete the ubicacion with this id
+		.delete(function(req, res) {
+			Ubicacion.remove({
+				_id: req.params.ubicacion_id
+			}, function(err, ubicacion) {
+				if (err) res.send(err);
+
+				res.json({ message: 'Successfully deleted' });
+			});
+		});
 
 	return apiRouter;
 };

@@ -49,39 +49,63 @@ module.exports = function(app, express) {
 	  }
 	});
 
+	// on routes that end in /dashboard
+	// ----------------------------------------------------
 	apiRouter.route('/')
 
-		// create a user (accessed at POST http://localhost:8080/users)
+		// create a dash (accessed at POST http://localhost:8080/dashboard)
 		.post(function(req, res) {
 
-			var user = new User();		// create a new instance of the User model
-			user.name = req.body.name;  // set the users name (comes from the request)
-			user.username = req.body.username;  // set the users username (comes from the request)
-			user.password = req.body.password;  // set the users password (comes from the request)
+			var dash = new Dash();		// create a new instance of the Dash model
 
-			user.save(function(err) {
+			dash.save(function(err) {
 				if (err) {
 					// duplicate entry
 					if (err.code == 11000)
-						return res.json({ success: false, message: 'A user with that username already exists. '});
+						return res.json({ success: false, message: 'Ese dashboard ya existe.'});
 					else
 						return res.send(err);
 				}
 
 				// return a message
-				res.json({ message: 'User created!' });
+				res.json({ message: '¡Dashboard creado!' });
 			});
 
 		})
 
-		// get all the users (accessed at GET http://localhost:8080/api/users)
+		// get all the dashboard (accessed at GET http://localhost:8080/api/dashboard)
 		.get(function(req, res) {
 
-			User.find({}, function(err, users) {
+			Dash.find({}, function(err, dashboard) {
 				if (err) res.send(err);
 
-				// return the users
-				res.json(users);
+				// return the dashboard
+				res.json(dashboard);
+			});
+		});
+
+	// on routes that end in /dashboard/:dash_id
+	// ----------------------------------------------------
+	apiRouter.route('/:dash_id')
+
+		// get the dash with that id
+		.get(function(req, res) {
+			Dash.findById(req.params.dash_id, function(err, dash) {
+				if (err) res.send(err);
+
+				// return that dash
+				res.json(dash);
+			});
+		})
+
+		// delete the dash with this id
+		.delete(function(req, res) {
+			Dash.remove({
+				_id: req.params.dash_id
+			}, function(err, dash) {
+				if (err) res.send(err);
+
+				res.json({ message: 'Successfully deleted.' });
 			});
 		});
 

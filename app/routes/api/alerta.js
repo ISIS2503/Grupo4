@@ -49,39 +49,88 @@ module.exports = function(app, express) {
 	  }
 	});
 
+	// on routes that end in /alertas
+	// ----------------------------------------------------
 	apiRouter.route('/')
 
-		// create a user (accessed at POST http://localhost:8080/users)
+		// create a alerta (accessed at POST http://localhost:8080/alertas)
 		.post(function(req, res) {
 
-			var user = new User();		// create a new instance of the User model
-			user.name = req.body.name;  // set the users name (comes from the request)
-			user.username = req.body.username;  // set the users username (comes from the request)
-			user.password = req.body.password;  // set the users password (comes from the request)
+			var alerta = new Alerta();		// create a new instance of the Alerta model
+			alerta.tipoAlerta = req.body.tipoAlerta;
+			alerta.activa = req.body.activa;
+			alerta.fecha = req.body.fecha;
 
-			user.save(function(err) {
+			alerta.save(function(err) {
 				if (err) {
 					// duplicate entry
 					if (err.code == 11000)
-						return res.json({ success: false, message: 'A user with that username already exists. '});
+						return res.json({ success: false, message: 'Esa alerta ya existe.'});
 					else
 						return res.send(err);
 				}
 
 				// return a message
-				res.json({ message: 'User created!' });
+				res.json({ message: '¡Alerta creada!' });
 			});
 
 		})
 
-		// get all the users (accessed at GET http://localhost:8080/api/users)
+		// get all the alertas (accessed at GET http://localhost:8080/api/alertas)
 		.get(function(req, res) {
 
-			User.find({}, function(err, users) {
+			Alerta.find({}, function(err, alertas) {
 				if (err) res.send(err);
 
-				// return the users
-				res.json(users);
+				// return the alertas
+				res.json(alertas);
+			});
+		});
+
+	// on routes that end in /alertas/:alerta_id
+	// ----------------------------------------------------
+	apiRouter.route('/:alerta_id')
+
+		// get the alerta with that id
+		.get(function(req, res) {
+			Alerta.findById(req.params.alerta_id, function(err, alerta) {
+				if (err) res.send(err);
+
+				// return that alerta
+				res.json(alerta);
+			});
+		})
+
+		// update the alerta with this id
+		.put(function(req, res) {
+			Alerta.findById(req.params.alerta_id, function(err, alerta) {
+
+				if (err) res.send(err);
+
+				// set the new alerta information if it exists in the request
+				if(req.body.tipoAlerta) alerta.tipoAlerta = req.body.tipoAlerta;
+				if(req.body.activa) alerta.activa = req.body.activa;
+				if(req.body.fecha) alerta.fecha = req.body.fecha;
+
+				// save the alerta
+				alerta.save(function(err) {
+					if (err) res.send(err);
+
+					// return a message
+					res.json({ message: '¡Alerta actualizada!' });
+				});
+
+			});
+		})
+
+		// delete the alerta with this id
+		.delete(function(req, res) {
+			Alerta.remove({
+				_id: req.params.alerta_id
+			}, function(err, alerta) {
+				if (err) res.send(err);
+
+				res.json({ message: 'Successfully deleted' });
 			});
 		});
 
