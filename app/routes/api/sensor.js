@@ -1,8 +1,5 @@
 var bodyParser = require('body-parser'); 	// get body-parser
 var Sensor       = require('../../models/Sensor');
-var TempMin      = require('../../models/tempMin');
-var NoiceMin     = require('../../models/noiceMin');
-var CarbonMin    = require('../../models/carbonMin');
 var jwt        = require('jsonwebtoken');
 var config     = require('../../../config');
 
@@ -36,7 +33,7 @@ module.exports = function(app, express) {
 	  //       // if everything is good, save to request for use in other routes
 	  //       req.decoded = decoded;
 		//
-	  //       next(); // make sure we go to the next routes and don't stop here
+	         next(); // make sure we go to the next routes and don't stop here
 	  //     }
 	  //   });
 		//
