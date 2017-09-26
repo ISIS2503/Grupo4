@@ -1,0 +1,26 @@
+{
+  "name": "node-api",
+  "description": "",
+  "main": "server.js",
+  "authors": [
+    "jc-bustamante143 <jc.bustamante143@uniandes.edu.co>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ISIS2503/Grupo4",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/assets/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "angular": "^1.6.6",
+    "angular-route": "^1.6.6",
+    "angular-animate": "^1.6.6",
+    "angular-bootstrap": "^2.5.0",
+    "angular-ui-router": "^1.0.6"
+  }
+}
