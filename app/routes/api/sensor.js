@@ -115,13 +115,14 @@ module.exports = function(app, express) {
 				if (err) res.send(err);
 
 				// set the new sensor information if it exists in the request
-				if(req.body.tipoSensor) sensor.tipoSensor = req.body.tipoSensor;
-				if(req.body.frecuencia) sensor.frecuencia = req.body.frecuencia;
-				if(req.body.valorMin) sensor.valorMin = req.body.valorMin;
-				if(req.body.valorMax) sensor.valorMax = req.body.valorMax;
-				if(req.body.unidadMedida) sensor.unidadMedida = req.body.unidadMedida;
-				if(req.body.fechaMedida) sensor.fechaMedida = req.body.fechaMedida;
-				if(req.body.valorMedida) sensor.valorMedida = req.body.valorMedida;
+
+				if(req.body.tipoSensor) sensor.tipoSensor = req.body.sensor;
+				// if(req.body.frecuencia) sensor.frecuencia = req.body.frecuencia;
+				// if(req.body.valorMin) sensor.valorMin = req.body.valorMin;
+				// if(req.body.valorMax) sensor.valorMax = req.body.valorMax;
+				if(req.body.unidadMedida) sensor.unidadMedida = req.body.unit;
+				if(req.body.fechaMedida) sensor.fechaMedida = req.body.protime;
+				if(req.body.valorMedida) sensor.valorMedida = req.body.data;
 
 				// save the sensor
 				sensor.save(function(err) {
