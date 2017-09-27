@@ -51,7 +51,7 @@ var apiRoutesSensor = require('./app/routes/api/sensor')(app, express);
 app.use('/sensores', apiRoutesSensor);
 
 var apiRoutesMicros = require('./app/routes/api/micros')(app, express);
-app.use('/micros', apiRoutesSensor);
+app.use('/micros', apiRoutesMicros);
 
 var apiRoutesDash = require('./app/routes/api/tableroControl')(app, express);
 app.use('/dashboard', apiRoutesDash);

@@ -4,13 +4,10 @@ var Schema = mongoose.Schema;
 
 // user schema
  var SensorSchema = new Schema({
- tipoSensor: String, //Tipo de Sensor (Constante)
- // frecuencia: String, //Frecuencia de Muestreo (Constante)
- // valorMin: String, //Valor Mínimo Rango (Constante)
- // valorMax: String, //Valor Máximo Rango (Constante)
- unidadMedida: String, //Unidad de medida del sensor (Constante)
- fechaMedida: String, //Unidad de medida del sensor
- valorMedida: String //Unidad de medida del sensor
+ tipoSensor: { type: String, required: true}, //Tipo de Sensor (Constante)
+ unidadMedida: { type: String, required: true}, //Unidad de medida del sensor (Constante)
+ fechaMedida: { type: String, required: true}, //Unidad de medida del sensor
+ valorMedida: { type: String, required: true} //Unidad de medida del sensor
  });
 
  // return the model

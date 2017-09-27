@@ -8,6 +8,9 @@ int soundPin = 26; // Use Pin 10 as Sound Input (Analog)
 int gasPin = 24; // Use pin 0 as CO Input (Analog)
 int tempPin = 16; //Use pin 0 as Temp Input (Digital)
 String rpta = "";
+String numMicro = "1";
+String areaMicro = "1";
+String nivelMicro = "1";
 /* El sensor de luz utiliza comunicación I2C (SDA y SCL)*/
 
 /* Constantes para calcular PPM*/
@@ -77,6 +80,25 @@ void loop()
   rpta = rpta +lux;
   rpta = rpta +"\t";
   rpta = rpta +"lx";
+  rpta = rpta +"\t";
+
+// Añade el número de MicroControlador
+  rpta = rpta +"MicroControlador Num:";
+  rpta = rpta +"\t";
+  rpta = rpta + numMicro;
+  rpta = rpta +"\t";
+
+// Añade el área del MicroControlador
+  rpta = rpta +"Area:";
+  rpta = rpta +"\t";
+  rpta = rpta + areaMicro;
+  rpta = rpta +"\t";
+
+// Añade el nivel del MicroControlador
+  rpta = rpta +"Nivel:";
+  rpta = rpta +"\t";
+  rpta = rpta + nivelMicro;
+
   rpta = rpta +"\n";
   Serial.print(rpta);
   rpta = "";
