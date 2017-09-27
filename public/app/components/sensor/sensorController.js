@@ -1,4 +1,4 @@
-sensorangular.module('sensorCtrl', ['sensorService'])
+angular.module('sensorCtrl', ['sensorService'])
 
 .controller('sensorController', function(Sensor) {
 
