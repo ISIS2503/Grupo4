@@ -35,7 +35,7 @@ module.exports = function(app, express) {
 	  //       // if everything is good, save to request for use in other routes
 	  //       req.decoded = decoded;
 		//
-	  //       next(); // make sure we go to the next routes and don't stop here
+	         next(); // make sure we go to the next routes and don't stop here
 	  //     }
 	  //   });
 		//

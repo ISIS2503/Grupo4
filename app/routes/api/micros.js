@@ -61,39 +61,6 @@ module.exports = function(app, express) {
 		var micro = new Micro();		// create a new instance of the Micro model
 		micro.idMicro = req.body.idMicro;
 
-		var ubicacionM = new Ubicacion();		// create a new instance of the Ubicacion model
-		ubicacionM.area = req.body.area;  // (comes from the request)
-		ubicacionM.nivel = req.body.nivel;  // (comes from the request)
-
-		ubicacionM.save(function(err) {
-			if (err) {
-				// duplicate entry
-				if (err.code == 11000)
-				return res.json({ success: false, message: 'Ya existe esa ubicación.'});
-				else
-				return res.send(err);
-			}
-		});
-
-		var sensorM = new Sensor();		// create a new instance of the Sensor model
-		sensorM.tipoSensor = req.body.sensor;
-		sensorM.unidadMedida = req.body.unit;
-		sensorM.fechaMedida = req.body.protime;
-		sensorM.valorMedida = req.body.data;
-
-		sensorM.save(function(err) {
-			if (err) {
-				// duplicate entry
-				if (err.code == 11000)
-				return res.json({ success: false, message: 'Ese sensor ya existe.'});
-				else
-				return res.send(err);
-			}
-		});
-
-		micro.sensor = sensorM;
-		micro.ubicacion = ubicacionM;
-
 		micro.save(function(err) {
 			if (err) {
 				// duplicate entry
@@ -102,64 +69,70 @@ module.exports = function(app, express) {
 				else
 				return res.send(err);
 			}
-			// return a message
-			res.json({ message: '¡Micro creado!' });
-		});
 
-	})
-
-	// get all the micros (accessed at GET http://localhost:8080/api/micros)
-	.get(function(req, res) {
-
-		Micro.find({}, function(err, micros) {
-			if (err) res.send(err);
-
-			// return the micros
-			res.json(micros);
-		});
-	});
-
-	// on routes that end in /micros/:micro_id
-	// ----------------------------------------------------
-	apiRouter.route('/:micro_id')
-
-	// get the micro with that id
-	.get(function(req, res) {
-		Micro.findById(req.params.micro_id, function(err, micro) {
-			if (err) res.send(err);
-
-			// return that micro
-			res.json(micro);
-		});
-	})
-
-	// update the micro with this id
-	.put(function(req, res) {
-		Micro.findById(req.params.micro_id, function(err, micro) {
-
-			if (err) res.send(err);
-			if(req.body.idMicro) micro.idMicro = req.body.idMicro;
-			// save the micro
-			micro.save(function(err) {
-				if (err) res.send(err);
-
-				// return a message
-				res.json({ message: '¡Micro actualizado!' });
+			Ubicacion.findOneAndUpdate(
+				{area:req.body.area, nivel:req.body.nivel},
+				{$addToSet : {"micros" : micro._id}},
+				function(err) {
+					if (err) return res.send(err);
+					// return a message
+					res.json({ message: '¡Micro creado!' });
+				});
 			});
 
+		})
+
+		// get all the micros (accessed at GET http://localhost:8080/api/micros)
+		.get(function(req, res) {
+
+			Micro.find({}, function(err, micros) {
+				if (err) res.send(err);
+				// return the micros
+				res.json(micros);
+			});
 		});
-	})
 
-	// delete the micro with this id
-	.delete(function(req, res) {
-		Micro.remove({
-			_id: req.params.micro_id
-		}, function(err, micro) {
-			if (err) res.send(err);
+		// on routes that end in /micros/:micro_id
+		// ----------------------------------------------------
+		apiRouter.route('/:micro_id')
 
-			res.json({ message: 'Successfully deleted.' });
+		// get the micro with that id
+		.get(function(req, res) {
+			Micro.findById(req.params.sensor_id, function(err, micro) {
+				if (err) res.send(err);
+
+				// return that micro
+				res.json(micro);
+			});
+		})
+
+		// update the micro with this id
+		.put(function(req, res) {
+			Micro.findById(req.params.sensor_id, function(err, micro) {
+
+				if (err) res.send(err);
+				if(req.body.idMicro) micro.idMicro = req.body.idMicro;
+				// save the micro
+				micro.save(function(err) {
+					if (err) res.send(err);
+
+					// return a message
+					res.json({ message: '¡Micro actualizado!' });
+				});
+
+			});
+		})
+
+		// delete the micro with this id
+		.delete(function(req, res) {
+			Micro.remove({
+				_id: req.params.micro_id
+			}, function(err, micro) {
+				if (err) res.send(err);
+
+				res.json({ message: 'Successfully deleted.' });
+			});
 		});
-	});
 
-	return apiRouter;
-};
+		return apiRouter;
+	};
