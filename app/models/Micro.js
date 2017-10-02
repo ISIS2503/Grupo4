@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 // user schema
 var MicroControladorSchema = new Schema({
   idMicro: { type: String, required: true, index: { unique: true }}, //Id del MicroControlador (1-2500)
-  sensors: [{ type: Schema.Types.ObjectId, index: { unique: true }, ref: 'Sensor' }]
+  sensors: [{ type: Schema.Types.ObjectId, ref: 'Sensor' }]
 });
 
 // return the model

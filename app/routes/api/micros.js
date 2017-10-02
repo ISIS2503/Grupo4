@@ -60,16 +60,11 @@ module.exports = function(app, express) {
 
 		var micro = new Micro();		// create a new instance of the Micro model
 		micro.idMicro = req.body.idMicro;
-
 		micro.save(function(err) {
 			if (err) {
 				// duplicate entry
-				if (err.code == 11000)
-				return res.json({ success: false, message: 'Ese micro ya existe.'});
-				else
 				return res.send(err);
 			}
-
 			Ubicacion.findOneAndUpdate(
 				{area:req.body.area, nivel:req.body.nivel},
 				{$addToSet : {"micros" : micro._id}},
@@ -79,7 +74,6 @@ module.exports = function(app, express) {
 					res.json({ message: '¡Micro creado!' });
 				});
 			});
-
 		})
 
 		// get all the micros (accessed at GET http://localhost:8080/api/micros)
@@ -89,6 +83,24 @@ module.exports = function(app, express) {
 				if (err) res.send(err);
 				// return the micros
 				res.json(micros);
+			});
+		});
+
+		apiRouter.route('/jaja')
+		// Obtener todos los datos de una ubicación (area y nivel) para un tipo de sensor
+		.get(function(req, res) {
+			Ubicacion.aggregate({$unwind: "$micros"},
+			{$lookup: {from:"micros", localField: "micros", foreignField: "_id",as: "micros"}},
+			{$match: {area: req.headers['area'], nivel: req.headers['nivel']}},
+			{$project:{idMicro:"$micros.idMicro", sensores :"$micros.sensors"}},
+			{$unwind: "$idMicro"},{$unwind: "$sensores"},
+			{$lookup: {from: "sensors", localField: "sensores",foreignField: "_id",as: "sensores"}},
+			{$unwind: "$sensores"},
+			{$match: {"sensores.tipoSensor":req.headers['tipo-sensor']}},
+			{$project: {idMicro:1,idSensor:"$sensores.idSensor", datosMedidos: "$sensores.mediciones.valorMedida"}}, function(err, rpta)
+			{
+				if (err) res.send(err);
+				res.json(rpta);
 			});
 		});
 
