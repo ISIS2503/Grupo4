@@ -13,7 +13,7 @@ module.exports = function(app, express) {
 	// route middleware to verify a token
 	apiRouter.use(function(req, res, next) {
 		// do logging
-		console.log('Somebody just came to our app!');
+		console.log(' ¡Han entrado a "/ubicaciones"! ');
 		//
 		// // check header or url parameters or post parameters for token
 		// var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -66,7 +66,7 @@ module.exports = function(app, express) {
 				if (err.code == 11000)
 				return res.json({ success: false, message: 'Ya existe esa ubicación.'});
 				else
-				return res.send(err);
+				return res.json({ success: false, message: err.message});
 			}
 			// return a message
 			res.json({ message: 'Ubicación creada!' });

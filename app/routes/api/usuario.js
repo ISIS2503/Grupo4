@@ -42,9 +42,9 @@ module.exports = function(app, express) {
 					// if user is found and password is right
 					// create a token
 					var token = jwt.sign({
+						rol: user.rol,
 						name: user.name,
-						username: user.username,
-						rol: user.rol
+						username: user.username
 					}, superSecret, {
 						expiresIn: '24h' // expires in 24 hours
 					});
@@ -65,7 +65,7 @@ module.exports = function(app, express) {
 	apiRouter.use(function(req, res, next) {
 
 		// do logging
-		console.log('Somebody just came to our app!');
+		console.log(' ¡Han entrado a "/usuarios"! ');
 
 		// check header or url parameters or post parameters for token
 		var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -149,7 +149,6 @@ module.exports = function(app, express) {
 	.get(function(req, res) {
 		User.findById(req.params.user_id, function(err, user) {
 			if (err) res.send(err);
-
 			// return that user
 			res.json(user);
 		});

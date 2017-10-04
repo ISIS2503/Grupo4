@@ -6,11 +6,11 @@ var Schema = mongoose.Schema;
 var SensorSchema = new Schema({
   idSensor: { type: String, required: true, index: { unique: true }}, //Id del sensor (#Micro-Tipo)
   tipoSensor: { type: String, required: true}, //Tipo de Sensor (Constante)
-  medidaSeg: { type: String}, //Tipo de Sensor (Constante)
-  cantMedidas: { type: String}, //Tipo de Sensor (Constante)
+  medidaSeg: { type: Number}, //Tipo de Sensor (Constante)
+  cantMedidas: { type: Number}, //Tipo de Sensor (Constante)
   mediciones:[{
     fechaMedida: String, //Unidad de medida del sensor
-    valorMedida: String //Unidad de medida del sensor
+    valorMedida: Number //Unidad de medida del sensor
   }]
 });
 

@@ -13,7 +13,7 @@ module.exports = function(app, express) {
 	// route middleware to verify a token
 	apiRouter.use(function(req, res, next) {
 		// do logging
-		console.log('Somebody just came to our app!');
+		console.log(' ¡Han entrado a "/actuadores"! ');
 		//
 		// // check header or url parameters or post parameters for token
 		// var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -65,17 +65,18 @@ module.exports = function(app, express) {
 				if (err.code == 11000)
 				return res.json({ success: false, message: 'Ese actuador ya existe.'});
 				else
-				return res.send(err);
+				return res.json({ success: false, message: err.message});
 			}
-
-			Ubicacion.findOneAndUpdate(
-				{area:req.body.area, nivel:req.body.nivel},
-				{$addToSet : {"actuadores" : actuador._id}},
-				function(err) {
-					if (err) return res.send(err);
-					// return a message
-					res.json({ message: 'Actuador creado!' });
-				});
+			else{
+				Ubicacion.findOneAndUpdate(
+					{area:req.body.area, nivel:req.body.nivel},
+					{$addToSet : {"actuadores" : actuador._id}},
+					function(err) {
+						if (err) return res.send(err);
+						// return a message
+						res.json({ message: 'Actuador creado!' });
+					});
+				}
 			});
 		})
 

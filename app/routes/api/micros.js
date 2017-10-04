@@ -15,7 +15,7 @@ module.exports = function(app, express) {
 	// route middleware to verify a token
 	apiRouter.use(function(req, res, next) {
 		// do logging
-		console.log('Somebody just came to our app!');
+		console.log(' ¡Han entrado a "/micros"! ');
 		//
 		// // check header or url parameters or post parameters for token
 		// var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -63,16 +63,21 @@ module.exports = function(app, express) {
 		micro.save(function(err) {
 			if (err) {
 				// duplicate entry
-				return res.send(err);
+				if (err.code == 11000)
+				return res.json({ success: false, message: 'Ese micro ya existe.'});
+				else
+				return res.json({ success: false, message: err.message});
 			}
-			Ubicacion.findOneAndUpdate(
-				{area:req.body.area, nivel:req.body.nivel},
-				{$addToSet : {"micros" : micro._id}},
-				function(err) {
-					if (err) return res.send(err);
-					// return a message
-					res.json({ message: '¡Micro creado!' });
-				});
+			else{
+				Ubicacion.findOneAndUpdate(
+					{area:req.body.area, nivel:req.body.nivel},
+					{$addToSet : {"micros" : micro._id}},
+					function(err) {
+						if (err) return res.send(err);
+						// return a message
+						res.json({ message: '¡Micro creado!' });
+					});
+				}
 			});
 		})
 
@@ -86,23 +91,30 @@ module.exports = function(app, express) {
 			});
 		});
 
-		apiRouter.route('/jaja')
-		// Obtener todos los datos de una ubicación (area y nivel) para un tipo de sensor
-		.get(function(req, res) {
-			Ubicacion.aggregate({$unwind: "$micros"},
-			{$lookup: {from:"micros", localField: "micros", foreignField: "_id",as: "micros"}},
-			{$match: {area: req.headers['area'], nivel: req.headers['nivel']}},
-			{$project:{idMicro:"$micros.idMicro", sensores :"$micros.sensors"}},
-			{$unwind: "$idMicro"},{$unwind: "$sensores"},
-			{$lookup: {from: "sensors", localField: "sensores",foreignField: "_id",as: "sensores"}},
-			{$unwind: "$sensores"},
-			{$match: {"sensores.tipoSensor":req.headers['tipo-sensor']}},
-			{$project: {idMicro:1,idSensor:"$sensores.idSensor", datosMedidos: "$sensores.mediciones.valorMedida"}}, function(err, rpta)
-			{
-				if (err) res.send(err);
-				res.json(rpta);
-			});
-		});
+		// apiRouter.route('/jaja')
+		// // Obtener todos los datos de una ubicación (area y nivel) para un tipo de sensor
+		// .get(function(req, res) {
+		// 	Ubicacion.aggregate({$unwind: "$micros"},
+		// 	{$lookup: {from:"micros", localField: "micros", foreignField: "_id",as: "micros"}},
+		// 	{$match: {area: "C", nivel:"1"}},
+		// 	{$project:{idMicro:"$micros.idMicro", sensores :"$micros.sensors"}},
+		// 	{$unwind: "$idMicro"},{$unwind: "$sensores"},
+		// 	{$lookup: {from: "sensors", localField: "sensores",foreignField: "_id",as: "sensores"}},
+		// 	{$unwind: "$sensores"},
+		// 	{$match: {"sensores.tipoSensor":"Noise sensor"}},
+		// 	{$project: {idToma:"A",
+		// 	promDatos:{$avg: "$sensores.mediciones.valorMedida"},
+		// 	minDatos:{$min: "$sensores.mediciones.valorMedida"},
+		// 	maxDatos:{$max: "$sensores.mediciones.valorMedida"}}},
+		// 	{$group: {_id:"$idToma", promedioTotal: {$avg:"$promDatos"},
+		// 	minTotal: {$min:"$minDatos"},
+		// 	maxTotal: {$max:"$maxDatos"}}}, function(err, rpta)
+		// 	{
+		// 		if (err) res.send(err);
+		// 		res.json(rpta);
+		// 		console.log(rpta.minTotal);
+		// 	});
+		// });
 
 		// on routes that end in /micros/:micro_id
 		// ----------------------------------------------------

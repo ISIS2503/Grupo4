@@ -2,6 +2,9 @@ var bodyParser = require('body-parser'); 	// get body-parser
 var Dash       = require('../../models/Dash');
 var Alerta     = require('../../models/Alerta');
 var Reporte    = require('../../models/Reporte');
+var Micro       = require('../../models/Micro');
+var Sensor       = require('../../models/Sensor');
+var Ubicacion       = require('../../models/Ubicacion');
 var jwt        = require('jsonwebtoken');
 var config     = require('../../../config');
 
@@ -15,7 +18,7 @@ module.exports = function(app, express) {
 	// route middleware to verify a token
 	apiRouter.use(function(req, res, next) {
 		// do logging
-		console.log('Somebody just came to our app!');
+		console.log(' ¡Han entrado a "/dashboard"! ');
 		//
 		// // check header or url parameters or post parameters for token
 		// var token = req.body.token || req.query.token || req.headers['x-access-token'];
@@ -202,27 +205,44 @@ module.exports = function(app, express) {
 
 	// create a reporte (accessed at POST http://localhost:8080/reportes)
 	.post(function(req, res) {
+		Ubicacion.aggregate({$unwind: "$micros"},
+		{$lookup: {from:"micros", localField: "micros", foreignField: "_id",as: "micros"}},
+		{$match: {area: req.headers['area'], nivel: req.headers['nivel']}},
+		{$project:{idMicro:"$micros.idMicro", sensores :"$micros.sensors"}},
+		{$unwind: "$idMicro"},{$unwind: "$sensores"},
+		{$lookup: {from: "sensors", localField: "sensores",foreignField: "_id",as: "sensores"}},
+		{$unwind: "$sensores"},
+		{$match: {"sensores.tipoSensor":req.headers['tipo-sensor']}},
+		{$project: {idToma:"A",
+		promDatos:{$avg: "$sensores.mediciones.valorMedida"},
+		minDatos:{$min: "$sensores.mediciones.valorMedida"},
+		maxDatos:{$max: "$sensores.mediciones.valorMedida"}}},
+		{$group: {_id:"$idToma", promedioTotal: {$avg:"$promDatos"},
+		minTotal: {$min:"$minDatos"},
+		maxTotal: {$max:"$maxDatos"}}}, function(err, rpta)
+		{
+			if (err) res.send(err);
+			else {
+				var reporte = new Reporte();		// create a new instance of the Reporte model
+				reporte.valorMin = rpta.minTotal;  // set the reportes name (comes from the request)
+				reporte.valorMax = rpta.maxTotal;  // set the reportes reportename (comes from the request)
+				reporte.valorMedio = rpta.promedioTotal;  // set the reportes password (comes from the request)
+				reporte.variacion = 0;  // set the reportes reportename (comes from the request)
+				reporte.fecha = "C";  // set the reportes password (comes from the request)
 
-		var reporte = new Reporte();		// create a new instance of the Reporte model
-		reporte.valorMin = req.body.valorMin;  // set the reportes name (comes from the request)
-		reporte.valorMax = req.body.valorMax;  // set the reportes reportename (comes from the request)
-		reporte.valorMedio = req.body.valorMedio;  // set the reportes password (comes from the request)
-		reporte.variacion = req.body.variacion;  // set the reportes reportename (comes from the request)
-		reporte.fecha = req.body.fecha;  // set the reportes password (comes from the request)
-
-		reporte.save(function(err) {
-			if (err) {
-				// duplicate entry
-				if (err.code == 11000)
-				return res.json({ success: false, message: 'Ese reporte ya existe'});
-				else
-				return res.send(err);
+				reporte.save(function(err) {
+					if (err) {
+						// duplicate entry
+						if (err.code == 11000)
+						return res.json({ success: false, message: 'Ese reporte ya existe'});
+						else
+						return res.send(err);
+					}
+					// return a message
+					res.json({ message: '¡Reporte creado!' });
+				});
 			}
-
-			// return a message
-			res.json({ message: '¡Reporte creado!' });
 		});
-
 	})
 
 	// get all the reportes (accessed at GET http://localhost:8080/api/reportes)

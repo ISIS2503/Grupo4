@@ -4,10 +4,10 @@ var bcrypt 		 = require('bcrypt-nodejs');
 
 // user schema
 var ReporteSchema   = new Schema({
-	valorMin: { type: String, required: true},
-	valorMax: { type: String, required: true},
-	valorMedio: { type: String, required: true},
-	variacion: { type: String, required: true},
+	valorMin: { type: Number, required: true},
+	valorMax: { type: Number, required: true},
+	valorMedio: { type: Number, required: true},
+	variacion: { type: Number, required: true},
 	fecha: { type: String, required: true}
 });
 
