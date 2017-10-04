@@ -223,12 +223,12 @@ module.exports = function(app, express) {
 		{
 			if (err) res.send(err);
 			else {
-				var reporte = new Reporte();		// create a new instance of the Reporte model
-				reporte.valorMin = rpta.minTotal;  // set the reportes name (comes from the request)
-				reporte.valorMax = rpta.maxTotal;  // set the reportes reportename (comes from the request)
-				reporte.valorMedio = rpta.promedioTotal;  // set the reportes password (comes from the request)
-				reporte.variacion = 0;  // set the reportes reportename (comes from the request)
-				reporte.fecha = "C";  // set the reportes password (comes from the request)
+				var reporte = new Reporte();
+				reporte.valorMin = rpta[0].minTotal;
+				reporte.valorMax = rpta[0].maxTotal;
+				reporte.valorMedio = rpta[0].promedioTotal;
+				reporte.variacion = 0;
+				reporte.fecha = new Date();  
 
 				reporte.save(function(err) {
 					if (err) {

@@ -91,30 +91,30 @@ module.exports = function(app, express) {
 			});
 		});
 
-		// apiRouter.route('/jaja')
-		// // Obtener todos los datos de una ubicación (area y nivel) para un tipo de sensor
-		// .get(function(req, res) {
-		// 	Ubicacion.aggregate({$unwind: "$micros"},
-		// 	{$lookup: {from:"micros", localField: "micros", foreignField: "_id",as: "micros"}},
-		// 	{$match: {area: "C", nivel:"1"}},
-		// 	{$project:{idMicro:"$micros.idMicro", sensores :"$micros.sensors"}},
-		// 	{$unwind: "$idMicro"},{$unwind: "$sensores"},
-		// 	{$lookup: {from: "sensors", localField: "sensores",foreignField: "_id",as: "sensores"}},
-		// 	{$unwind: "$sensores"},
-		// 	{$match: {"sensores.tipoSensor":"Noise sensor"}},
-		// 	{$project: {idToma:"A",
-		// 	promDatos:{$avg: "$sensores.mediciones.valorMedida"},
-		// 	minDatos:{$min: "$sensores.mediciones.valorMedida"},
-		// 	maxDatos:{$max: "$sensores.mediciones.valorMedida"}}},
-		// 	{$group: {_id:"$idToma", promedioTotal: {$avg:"$promDatos"},
-		// 	minTotal: {$min:"$minDatos"},
-		// 	maxTotal: {$max:"$maxDatos"}}}, function(err, rpta)
-		// 	{
-		// 		if (err) res.send(err);
-		// 		res.json(rpta);
-		// 		console.log(rpta.minTotal);
-		// 	});
-		// });
+		apiRouter.route('/jaja')
+		// Obtener todos los datos de una ubicación (area y nivel) para un tipo de sensor
+		.get(function(req, res) {
+			Ubicacion.aggregate({$unwind: "$micros"},
+			{$lookup: {from:"micros", localField: "micros", foreignField: "_id",as: "micros"}},
+			{$match: {area: "C", nivel:"1"}},
+			{$project:{idMicro:"$micros.idMicro", sensores :"$micros.sensors"}},
+			{$unwind: "$idMicro"},{$unwind: "$sensores"},
+			{$lookup: {from: "sensors", localField: "sensores",foreignField: "_id",as: "sensores"}},
+			{$unwind: "$sensores"},
+			{$match: {"sensores.tipoSensor":"Noise sensor"}},
+			{$project: {idToma:"A",
+			promDatos:{$avg: "$sensores.mediciones.valorMedida"},
+			minDatos:{$min: "$sensores.mediciones.valorMedida"},
+			maxDatos:{$max: "$sensores.mediciones.valorMedida"}}},
+			{$group: {_id:"$idToma", promedioTotal: {$avg:"$promDatos"},
+			minTotal: {$min:"$minDatos"},
+			maxTotal: {$max:"$maxDatos"}}}, function(err, rpta)
+			{
+				if (err) res.send(err);
+				res.json(rpta);
+				console.log(rpta[0].minTotal);
+			});
+		});
 
 		// on routes that end in /micros/:micro_id
 		// ----------------------------------------------------
