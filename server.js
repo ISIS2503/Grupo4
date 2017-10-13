@@ -2,18 +2,18 @@
 // ======================================
 
 // CALL THE PACKAGES --------------------
-var express    = require('express');		// call express
-var app        = express(); 				// define our app using express
-var bodyParser = require('body-parser'); 	// get body-parser
-var morgan     = require('morgan'); 		// used to see requests
-var mongoose   = require('mongoose');
-var config 	   = require('./config');
-var path 	   = require('path');
+var express = require('express'); // call express
+var app = express(); // define our app using express
+var bodyParser = require('body-parser'); // get body-parser
+var morgan = require('morgan'); // used to see requests
+var mongoose = require('mongoose');
+var config = require('./config');
+var path = require('path');
 
 // APP CONFIGURATION ==================
 // ====================================
 // use body parser so we can grab information from POST requests
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // configure our app to handle CORS requests
@@ -38,23 +38,17 @@ app.use(express.static(__dirname + '/public'));
 // ====================================
 
 // API ROUTES ------------------------
-var apiRoutesUser = require('./app/routes/api/usuario')(app, express);
-app.use('/api/users', apiRoutesUser);
+var apiRoutesUser = require('./app/routes/api/users')(app, express);
+app.use('/users', apiRoutesUser);
 
-var apiRoutesActuador = require('./app/routes/api/actuadores')(app, express);
-app.use('/api/actuadores', apiRoutesActuador);
+var apiRoutesDevices = require('./app/routes/api/devices')(app, express);
+app.use('/devices', apiRoutesDevices);
 
-var apiRoutesUbicacion = require('./app/routes/api/ubicacion')(app, express);
-app.use('/api/ubicaciones', apiRoutesUbicacion);
+var apiRoutesDash = require('./app/routes/api/dashboard')(app, express);
+app.use('/dashboard', apiRoutesDash);
 
-var apiRoutesSensor = require('./app/routes/api/sensor')(app, express);
-app.use('/api/sensores', apiRoutesSensor);
-
-var apiRoutesMicros = require('./app/routes/api/micros')(app, express);
-app.use('/api/micros', apiRoutesMicros);
-
-var apiRoutesDash = require('./app/routes/api/tableroControl')(app, express);
-app.use('/api/dashboard', apiRoutesDash);
+var apiRoutesData = require('./app/routes/api/data')(app, express);
+app.use('/data', apiRoutesData);
 
 // MAIN CATCHALL ROUTE ---------------
 // SEND USERS TO FRONTEND ------------
