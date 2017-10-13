@@ -109,8 +109,8 @@ module.exports = function(app, express) {
 				}
 			}, {
 				$match: {
-					area: "A",
-					nivel: "1"
+					area: req.body.area,
+					nivel: req.body.nivel
 				}
 			}, {
 				$unwind: "$micros"
@@ -129,7 +129,7 @@ module.exports = function(app, express) {
 				$unwind: "$sensores"
 			}, {
 				$match: {
-					"sensores.tipoSensor": "Temperatura"
+					"sensores.tipoSensor": req.body.tipoReporte
 				}
 			}, {
 				$project: {
@@ -174,6 +174,9 @@ module.exports = function(app, express) {
 					reporte.valorMax = rpta[0].maxTotal;
 					reporte.valorMedio = rpta[0].promedioTotal;
 					reporte.variacion = rpta[0].devTotal;
+					reporte.tipoReporte = req.body.tipoReporte;
+					reporte.area = req.body.area;
+					reporte.nivel = req.body.nivel;
 					reporte.fecha = new Date();
 
 					reporte.save(function(err) {
