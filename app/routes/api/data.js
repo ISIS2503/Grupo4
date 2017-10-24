@@ -3,6 +3,7 @@ var Medicion = require('../../models/Medicion');
 var Alerta = require('../../models/Alerta');
 var Actuador = require('../../models/Actuador');
 var Sensor = require('../../models/Sensor');
+var Micro = require('../../models/Micro');
 var jwt = require('jsonwebtoken');
 var config = require('../../../config');
 var limits = require('../../../limits');
@@ -16,32 +17,35 @@ function fueraDeRango(idSens, data, res) {
 	Medicion.aggregate({ $match: { idSensor: idSens } }, { $sort: { fechaMedida: -1 } }, { $limit: 9 }, {
 		$group: {
 			_id: "$idSensor",
-			promedioTotal: { $avg: "$valorMedida" }
+			promedioTotal: { $avg: "$valorMedida" },
+			count: { $sum: 1 }
 		}
 	}, function(err, rpta) {
 		if (err) console.log(err);
 		else {
-			var num = (parseInt(data) + (rpta[0].promedioTotal) * 9) / 10;
-			if (idSens.endsWith("T")) {
-				var limiteInf = limits.minTemp;
-				var limiteSup = limits.maxTemp;
-			}
-			if (idSens.endsWith("G")) {
-				var limiteInf = limits.minGas;
-				var limiteSup = limits.maxGas;
-			}
-			if (idSens.endsWith("N")) {
-				var limiteInf = limits.minNoise;
-				var limiteSup = limits.maxNoise;
-			}
-			if (idSens.endsWith("L")) {
-				var limiteInf = limits.minLight;
-				var limiteSup = limits.maxLight;
-			}
-			if (num < limiteInf || num > limiteSup) {
-				console.log("Nueva alerta fuera rango.");
-				crearAlertaFR();
-				encenderActuadorZona(idSens);
+			if (rpta[0].count == 9) {
+				var num = (parseInt(data) + (rpta[0].promedioTotal) * 9) / 10;
+				if (idSens.endsWith("T")) {
+					var limiteInf = limits.minTemp;
+					var limiteSup = limits.maxTemp;
+				}
+				if (idSens.endsWith("G")) {
+					var limiteInf = limits.minGas;
+					var limiteSup = limits.maxGas;
+				}
+				if (idSens.endsWith("N")) {
+					var limiteInf = limits.minNoise;
+					var limiteSup = limits.maxNoise;
+				}
+				if (idSens.endsWith("L")) {
+					var limiteInf = limits.minLight;
+					var limiteSup = limits.maxLight;
+				}
+				if (num < limiteInf || num > limiteSup) {
+					console.log("Nueva alerta fuera rango.");
+					crearAlertaFR();
+					encenderActuadorZona(idSens, idSens.charAt(0));
+				}
 			}
 		}
 	});
@@ -55,17 +59,15 @@ function crearAlertaFR() {
 	alerta.save();
 }
 
-function encenderActuadorZona(sensor) {
-	Sensor.aggregate( //{ $match: { idSensor: idSens } }, { $sort: { fechaMedida: -1 } }, { $limit: 10 }, {
-			// $group: {
-			// 	_id: "$idSensor",
-			// 	promedioTotal: { $avg: "$valorMedida" }
-			// }
-		},
+function encenderActuadorZona(sensor, idMic) {
+	Micro.aggregate({ $lookup: { from: "ubicacions", localField: "ubicacion", foreignField: "_id", as: "ubis" } }, { $match: { "idMicro": idMic } }, { $unwind: "$ubis" }, { $project: { idUbi: "$ubicacion" } }, { $lookup: { from: "actuadors", localField: "idUbi", foreignField: "ubicacion", as: "u" } }, { $unwind: "$u" }, { $project: { idActu: "$u._id" } },
 		function(err, rpta) {
 			if (err) console.log(err);
 			else {
-				Actuador.findOneAndUpdate({ _id: rpta[0].idActu }, { activo: false });
+				Actuador.findById(rpta[0].idActu, function(act) {
+					act.activo = true;
+					act.save();
+				});
 				setTimeout(verificarActuador, 3600000, sensor, rpta[0].idActu);
 			}
 		});
@@ -99,7 +101,7 @@ function verificarActuador(idSens, idActu) {
 			if ((rpta[0].promedioTotal) < limiteInf || (rpta[0].promedioTotal) > limiteSup) {
 				crearAlertaActuador();
 			} else {
-				Actuador.findOneAndUpdate({ _id: idActu }, { activo: false });
+				Actuador.findOneAndUpdate({ idActuador: idActu }, { activo: false });
 			}
 		}
 	});
@@ -119,7 +121,7 @@ module.exports = function(app, express) {
 	var apiRouter = express.Router();
 
 	////////////////////////////////////////////////////////////////////////////////
-	//  Middleware 
+	//  Middleware
 	////////////////////////////////////////////////////////////////////////////////
 	apiRouter.use(function(req, res, next) {
 		console.log(' ¡Han entrado a "/data"! ');

@@ -56,24 +56,29 @@ module.exports = function(app, express) {
 				},
 				function(err, micro) {
 					if (err) res.send(err);
-					sensorM.idMicro = micro._id;
-					sensorM.idSensor = req.body.idSensor;
-					sensorM.tipoSensor = req.body.tipoSensor;
-					sensorM.save(function(err) {
-						if (err) {
-							if (err.code == 11000) return res.json({
-								success: false,
-								message: 'Ese sensor ya existe.'
-							});
-							else return res.json({
-								success: false,
-								message: err.message
-							});
-						} else {
-							res.json({
-								message: '¡Sensor creado!'
-							});
-						}
+					if (micro != null) {
+						sensorM.idMicro = micro._id;
+						sensorM.idSensor = req.body.idSensor;
+						sensorM.tipoSensor = req.body.tipoSensor;
+						sensorM.save(function(err) {
+							if (err) {
+								if (err.code == 11000) return res.json({
+									success: false,
+									message: 'Ese sensor ya existe.'
+								});
+								else return res.json({
+									success: false,
+									message: err.message
+								});
+							} else {
+								res.json({
+									message: '¡Sensor creado!'
+								});
+							}
+						});
+					} else return res.json({
+						success: false,
+						message: 'No se ha encontrado el MicroControlador.'
 					});
 				});
 		})
@@ -136,24 +141,29 @@ module.exports = function(app, express) {
 				},
 				function(err, ubi) {
 					if (err) res.send(err);
-					micro.ubicacion = ubi._id;
-					console.log(ubi);
-					micro.idMicro = req.body.idMicro;
-					micro.save(function(err) {
-						if (err) {
-							if (err.code == 11000) return res.json({
-								success: false,
-								message: 'Ese micro ya existe.'
-							});
-							else return res.json({
-								success: false,
-								message: err.message
-							});
-						} else {
-							res.json({
-								message: '¡Micro creado!'
-							});
-						}
+					if (ubi != null) {
+						micro.ubicacion = ubi._id;
+						console.log(ubi);
+						micro.idMicro = req.body.idMicro;
+						micro.save(function(err) {
+							if (err) {
+								if (err.code == 11000) return res.json({
+									success: false,
+									message: 'Ese micro ya existe.'
+								});
+								else return res.json({
+									success: false,
+									message: err.message
+								});
+							} else {
+								res.json({
+									message: '¡Micro creado!'
+								});
+							}
+						});
+					} else return res.json({
+						success: false,
+						message: 'No se ha encontrado la ubicación.'
 					});
 				});
 		})
@@ -214,24 +224,30 @@ module.exports = function(app, express) {
 				},
 				function(err, ubi) {
 					if (err) res.send(err);
-					actuador.ubicacion = ubi._id;
-					actuador.tiempoEnUso = 0;
-					actuador.activo = false;
-					micro.save(function(err) {
-						if (err) {
-							if (err.code == 11000) return res.json({
-								success: false,
-								message: 'Ese actuador ya existe.'
-							});
-							else return res.json({
-								success: false,
-								message: err.message
-							});
-						} else {
-							res.json({
-								message: '¡Actuador creado!'
-							});
-						}
+					if (ubi != null) {
+						actuador.idActuador = req.body.idActuador;
+						actuador.ubicacion = ubi._id;
+						actuador.tiempoEnUso = 0;
+						actuador.activo = false;
+						actuador.save(function(err) {
+							if (err) {
+								if (err.code == 11000) return res.json({
+									success: false,
+									message: 'Ese actuador ya existe.'
+								});
+								else return res.json({
+									success: false,
+									message: err.message
+								});
+							} else {
+								res.json({
+									message: '¡Actuador creado!'
+								});
+							}
+						});
+					} else return res.json({
+						success: false,
+						message: 'No se ha encontrado dicha ubicación.'
 					});
 				});
 		})
