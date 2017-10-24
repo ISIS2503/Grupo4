@@ -10,10 +10,6 @@ var config = require('../../../config');
 // super secret for creating tokens
 var superSecret = config.secret;
 
-function fueraDeRango(idSensor) {
-
-}
-
 module.exports = function(app, express) {
 
 	var apiRouter = express.Router();
@@ -52,19 +48,6 @@ module.exports = function(app, express) {
 	// Rutas para manejar el CRUD de alertas (http://localhost:8080/dashboard/alertas)
 	////////////////////////////////////////////////////////////////////////////////
 	apiRouter.route('/alertas')
-
-		.post(function(req, res) {
-			var alerta = new Alerta();
-			alerta.tipoAlerta = req.body.tipoAlerta;
-			alerta.activa = true;
-			alerta.fecha = new Date();
-			alerta.save(function(err) {
-				if (err) return res.send(err);
-				res.json({
-					message: '¡Alerta creada!'
-				});
-			});
-		})
 
 		.get(function(req, res) {
 			Alerta.find({}, function(err, alertas) {
@@ -221,23 +204,6 @@ module.exports = function(app, express) {
 	////////////////////////////////////////////////////////////////////////////////
 
 	apiRouter.route('/data')
-
-		.post(function(req, res) {
-			var data = new Medicion();
-			data.idSensor = req.body.idSensor;
-			data.fechaMedida = new Date();
-			data.idSensor = req.body.valorMedida;
-			data.save(function(err) {
-				if (err) return res.json({
-					success: false,
-					message: err.message
-				});
-				res.json({
-					message: '¡Dato guardado!'
-				});
-				fueraDeRango(req.body.idSensor);
-			});
-		})
 
 		.get(function(req, res) {
 			Ubicacion.find({}, function(err, datos) {
