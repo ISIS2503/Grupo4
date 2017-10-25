@@ -42,7 +42,7 @@ function fueraDeRango(idSens, data, res) {
 				}
 				if (num < limiteInf || num > limiteSup) {
 					console.log("Nueva alerta fuera rango.");
-					crearAlertaFR();
+					crearAlertaFR(idSens);
 					encenderActuadorZona(idSens, idSens.charAt(0));
 				}
 			}
@@ -50,11 +50,12 @@ function fueraDeRango(idSens, data, res) {
 	});
 }
 
-function crearAlertaFR() {
+function crearAlertaFR(idSensor) {
 	var alerta = new Alerta();
 	alerta.tipoAlerta = "Sensor fuera de rango";
 	alerta.activa = true;
 	alerta.fecha = new Date();
+	alerta.dispositivoAlerta = idSensor;
 	alerta.save();
 }
 
@@ -99,21 +100,60 @@ function verificarActuador(idSens, idActu) {
 				var limiteSup = limits.maxLight;
 			}
 			if ((rpta[0].promedioTotal) < limiteInf || (rpta[0].promedioTotal) > limiteSup) {
-				crearAlertaActuador();
+				crearAlertaActuador(idActu);
 			} else {
-				Actuador.findOneAndUpdate({ idActuador: idActu }, { activo: false });
+				Actuador.findById(idActu, function(err, datos) {
+					if (err) console.log(err);
+					datos.activo = false;
+					datos.save();
+				});
 			}
 		}
 	});
 }
 
-function crearAlertaActuador() {
+function crearAlertaActuador(idActuador) {
 	var alerta = new Alerta();
 	alerta.tipoAlerta = "Actuador inactivo";
 	alerta.activa = true;
 	alerta.fecha = new Date();
+	alerta.dispositivoAlerta = idActuador;
 	alerta.save();
 	console.log("Nueva alerta actuador.");
+}
+
+function actualizarHB(idS) {
+	Sensor.find({ idSensor: idS }, function(err, sensor) {
+		if (err) console.log(err);
+		if (sensor.heartBeat1 == null) heartBeat1 = new Date();
+		else heartBeat1 = heartBeat2;
+		heartBeat2 = new Date();
+		if (idSens.endsWith("T")) {
+			var maxHB = limits.hbTemp;
+		}
+		if (idSens.endsWith("G")) {
+			var maxHB = limits.hbGas;
+		}
+		if (idSens.endsWith("N")) {
+			var maxHB = limits.hbNoise;
+		}
+		if (idSens.endsWith("L")) {
+			var maxHB = limits.hbLight;
+		}
+		if (heartBeat2 - heartBeat1 > maxHB) {
+			crearAlertaFL(idSens);
+		}
+	});
+}
+
+function crearAlertaFL(idSensor) {
+	var alerta = new Alerta();
+	alerta.tipoAlerta = "Sensor fuera de línea.";
+	alerta.activa = true;
+	alerta.fecha = new Date();
+	alerta.dispositivoAlerta = idSensor;
+	alerta.save();
+	console.log("Nueva alerta fuera de línea.");
 }
 
 module.exports = function(app, express) {
@@ -166,6 +206,7 @@ module.exports = function(app, express) {
 			data.valorMedida = req.body.valorMedida;
 			data.save(function(err) {
 				if (err) return res.json({ success: false, message: err.message });
+				actualizarHB(req.body.idSensor);
 				res.json({ message: '¡Dato guardado!' });
 			});
 		})

@@ -6,5 +6,9 @@ module.exports = {
 	'minNoise': 0,
 	'maxNoise': 85,
 	'minGas': 0,
-	'maxGas': 100
+	'maxGas': 100,
+	'hbTemp': 300000,
+	'hbLight': 600000,
+	'hbNoise': 600000,
+	'hbGas': 300000
 };
