@@ -2,7 +2,6 @@ var bodyParser = require('body-parser'); // get body-parser
 var Medicion = require('../../models/Medicion');
 var Alerta = require('../../models/Alerta');
 var Actuador = require('../../models/Actuador');
-var Sensor = require('../../models/Sensor');
 var Micro = require('../../models/Micro');
 var jwt = require('jsonwebtoken');
 var config = require('../../../config');
@@ -64,9 +63,10 @@ function encenderActuadorZona(sensor, idMic) {
 		function(err, rpta) {
 			if (err) console.log(err);
 			else {
-				Actuador.findById(rpta[0].idActu, function(act) {
-					act.activo = true;
-					act.save();
+				Actuador.findById(rpta[0].idActu, function(err, datos) {
+					if (err) console.log(err);
+					datos.activo = true;
+					datos.save();
 				});
 				setTimeout(verificarActuador, 3600000, sensor, rpta[0].idActu);
 			}
@@ -171,7 +171,7 @@ module.exports = function(app, express) {
 		})
 
 		.get(function(req, res) {
-			Ubicacion.find({}, function(err, datos) {
+			Medicion.find({}, function(err, datos) {
 				if (err) res.send(err);
 				res.json(datos);
 			});
