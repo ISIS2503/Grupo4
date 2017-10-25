@@ -2,6 +2,7 @@ var bodyParser = require('body-parser'); // get body-parser
 var Medicion = require('../../models/Medicion');
 var Alerta = require('../../models/Alerta');
 var Actuador = require('../../models/Actuador');
+var Sensor = require('../../models/Sensor');
 var Micro = require('../../models/Micro');
 var jwt = require('jsonwebtoken');
 var config = require('../../../config');
@@ -122,12 +123,13 @@ function crearAlertaActuador(idActuador) {
 	console.log("Nueva alerta actuador.");
 }
 
-function actualizarHB(idS) {
-	Sensor.find({ idSensor: idS }, function(err, sensor) {
+function actualizarHB(idSens) {
+	Sensor.find({ idSensor: idSens }, function(err, sensor) {
 		if (err) console.log(err);
-		if (sensor.heartBeat1 == null) heartBeat1 = new Date();
-		else heartBeat1 = heartBeat2;
-		heartBeat2 = new Date();
+		if (sensor[0].heartBeat1 == null) sensor[0].heartBeat1 = new Date();
+		else sensor[0].heartBeat1 = sensor[0].heartBeat2;
+		sensor[0].heartBeat2 = new Date();
+		sensor[0].save();
 		if (idSens.endsWith("T")) {
 			var maxHB = limits.hbTemp;
 		}
@@ -140,7 +142,7 @@ function actualizarHB(idS) {
 		if (idSens.endsWith("L")) {
 			var maxHB = limits.hbLight;
 		}
-		if (heartBeat2 - heartBeat1 > maxHB) {
+		if (sensor[0].heartBeat2 - sensor[0].heartBeat1 > maxHB) {
 			crearAlertaFL(idSens);
 		}
 	});
