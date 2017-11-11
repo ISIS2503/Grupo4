@@ -5,15 +5,18 @@
 var express = require('express'); // call express
 var app = express(); // define our app using express
 var bodyParser = require('body-parser'); // get body-parser
-var morgan = require('morgan'); // used to see requests
 var mongoose = require('mongoose');
 var config = require('./config');
 var path = require('path');
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
+var forceSsl = require('express-force-ssl');
 
 // APP CONFIGURATION ==================
 // ====================================
 // use body parser so we can grab information from POST requests
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // configure our app to handle CORS requests
@@ -24,15 +27,19 @@ app.use(function(req, res, next) {
 	next();
 });
 
-// log all requests to the console
-app.use(morgan('dev'));
-
 // connect to our database (hosted on modulus.io)
 mongoose.connect(config.database);
+
+var options = {  
+	key: fs.readFileSync(config.pkey),
+	cert: fs.readFileSync(config.certi)
+};
 
 // set static files location
 // used for requests that our frontend will make
 app.use(express.static(__dirname + '/public'));
+
+app.use(forceSsl);
 
 // ROUTES FOR OUR API =================
 // ====================================
@@ -57,7 +64,15 @@ app.get('*', function(req, res) {
 	res.sendFile(path.join(__dirname + '/public/app/views/index.html'));
 });
 
+app.use(function(req, res, next) {
+	if (req.secure) {
+		next();
+	} else {
+		res.redirect('https://' + req.headers.host + req.url);
+	}
+});
+
 // START THE SERVER
 // ====================================
-app.listen(config.port);
-console.log('Magic happens on port ' + config.port);
+http.createServer(app).listen(config.httpPort);
+https.createServer(options, app).listen(config.httpsPort);

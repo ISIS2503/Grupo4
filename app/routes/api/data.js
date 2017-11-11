@@ -166,7 +166,6 @@ module.exports = function(app, express) {
 	//  Middleware
 	////////////////////////////////////////////////////////////////////////////////
 	apiRouter.use(function(req, res, next) {
-		console.log(' ¡Han entrado a "/data"! ');
 		// var token = req.body.token || req.query.token || req.headers['x-access-token'];
 		// // decode token
 		// if (token) {

@@ -18,7 +18,6 @@ module.exports = function(app, express) {
 	//  Middleware que verifica el token
 	////////////////////////////////////////////////////////////////////////////////
 	apiRouter.use(function(req, res, next) {
-		console.log(' ¡Han entrado a "/dashboard"! ');
 		// var token = req.body.token || req.query.token || req.headers['x-access-token'];
 		// // decode token
 		// if (token) {
@@ -196,19 +195,6 @@ module.exports = function(app, express) {
 				res.json({
 					message: 'Reporte eliminado.'
 				});
-			});
-		});
-
-	////////////////////////////////////////////////////////////////////////////////
-	// Rutas para manejar el CRUD de data (http://localhost:8080/dashboard/data)
-	////////////////////////////////////////////////////////////////////////////////
-
-	apiRouter.route('/data')
-
-		.get(function(req, res) {
-			Ubicacion.find({}, function(err, datos) {
-				if (err) res.send(err);
-				res.json(datos);
 			});
 		});
 

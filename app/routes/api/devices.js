@@ -17,7 +17,6 @@ module.exports = function(app, express) {
 	//  Middleware que verifica el token
 	////////////////////////////////////////////////////////////////////////////////
 	apiRouter.use(function(req, res, next) {
-		console.log(' ¡Han entrado a "/devices"! ');
 		// var token = req.body.token || req.query.token || req.headers['x-access-token'];
 		// // decode token
 		// if (token) {
