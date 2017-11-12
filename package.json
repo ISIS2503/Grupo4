@@ -9,6 +9,7 @@
     "heartbeat": "0.0.2",
     "jsonwebtoken": "^6.2.0",
     "mongoose": "^4.4.20",
-    "morgan": "^1.7.0"
+    "morgan": "^1.7.0",
+    "request": "^2.83.0"
   }
 }

@@ -10,6 +10,25 @@ var limits = require('../../../limits');
 var superSecret = config.secret;
 
 ////////////////////////////////////////////////////////////////////////////////
+//  Funciones para obtener el token
+////////////////////////////////////////////////////////////////////////////////
+
+var request = require("request");
+
+var options = {
+	method: 'POST',
+	url: 'https://arquisoft201720-jcbustamante143.auth0.com/oauth/token',
+	headers: { 'content-type': 'application/json' },
+	body: {
+		grant_type: 'client_credentials',
+		client_id: 'yWYUpaQ3fWlaAzCm2LhD3vVmlHg3epQ0',
+		client_secret: 'jDe7pVDYxLU1FhwWgR1IJD1X_-8NSdq5OvONqOrC4XhTo1J91R5WHXzezc21Gold',
+		audience: 'uniandes.edu.co/dataAu'
+	},
+	json: true
+};
+
+////////////////////////////////////////////////////////////////////////////////
 //  Funciones a validar en el Middleware
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -86,121 +105,152 @@ function encenderActuadorZona(sensor, idMic) {
 
 function verificarActuador(idSens, idActu) {
 	Medicion.aggregate({ $match: { idSensor: idSens } }, { $sort: { fechaMedida: -1 } }, { $limit: 10 }, {
-			$group: {
-				_id: "$idSensor",
-				promedioTotal: { $avg: "$valorMedida" }
-			}
-		}, function(err, rpta) {
-			if (err) console.log(err);
-			else {
-				if (idSens.endsWith("T")) {
-					var limiteInf = limits.minTemp;
-					var limiteSup = limits.maxTemp;
-				}
-				if (idSens.endsWith("G")) {
-					var limiteInf = limits.minGas;
-					var limiteSup = limits.maxGas;
-				}
-				if (idSens.endsWith("N")) {
-					var limiteInf = limits.minNoise;
-					var limiteSup = limits.maxNoise;
-				}
-				if (idSens.endsWith("L")) {
-					var limiteInf = limits.minLight;
-					var limiteSup = limits.maxLight;
-				}
-				if ((rpta[0].promedioTotal) >= limiteInf || (rpta[0].promedioTotal) <= limiteSup) {
-					window.clearInterval(intervalID);
-					Actuador.findById(idActu, function(err, datos) {
-						if (err) console.log(err);
-						datos.activo = false;
-						datos.save();
-					});
-				}
-			});
-	}
-
-	function crearAlertaActuador(idActuador) {
-		var alerta = new Alerta();
-		alerta.tipoAlerta = "Actuador inactivo";
-		alerta.activa = true;
-		alerta.fecha = new Date();
-		alerta.dispositivoAlerta = idActuador;
-		alerta.save();
-		console.log("Nueva alerta actuador.");
-	}
-
-	function actualizarHB(idSens) {
-		Sensor.find({ idSensor: idSens }, function(err, sensor) {
-			if (err) console.log(err);
-			if (sensor[0].heartBeat1 == null) sensor[0].heartBeat1 = new Date();
-			else sensor[0].heartBeat1 = sensor[0].heartBeat2;
-			sensor[0].heartBeat2 = new Date();
-			sensor[0].save();
+		$group: {
+			_id: "$idSensor",
+			promedioTotal: { $avg: "$valorMedida" }
+		}
+	}, function(err, rpta) {
+		if (err) console.log(err);
+		else {
 			if (idSens.endsWith("T")) {
-				var maxHB = limits.hbTemp;
+				var limiteInf = limits.minTemp;
+				var limiteSup = limits.maxTemp;
 			}
 			if (idSens.endsWith("G")) {
-				var maxHB = limits.hbGas;
+				var limiteInf = limits.minGas;
+				var limiteSup = limits.maxGas;
 			}
 			if (idSens.endsWith("N")) {
-				var maxHB = limits.hbNoise;
+				var limiteInf = limits.minNoise;
+				var limiteSup = limits.maxNoise;
 			}
 			if (idSens.endsWith("L")) {
-				var maxHB = limits.hbLight;
+				var limiteInf = limits.minLight;
+				var limiteSup = limits.maxLight;
 			}
-			if (sensor[0].heartBeat2 - sensor[0].heartBeat1 > maxHB) {
-				crearAlertaFL(idSens);
+			if ((rpta[0].promedioTotal) >= limiteInf || (rpta[0].promedioTotal) <= limiteSup) {
+				window.clearInterval(intervalID);
+				Actuador.findById(idActu, function(err, datos) {
+					if (err) console.log(err);
+					datos.activo = false;
+					datos.save();
+				});
 			}
-		});
-	}
+		}
+	});
+}
 
-	function crearAlertaFL(idSensor) {
-		var alerta = new Alerta();
-		alerta.tipoAlerta = "Sensor fuera de línea.";
-		alerta.activa = true;
-		alerta.fecha = new Date();
-		alerta.dispositivoAlerta = idSensor;
-		alerta.save();
-		console.log("Nueva alerta fuera de línea.");
-	}
+function crearAlertaActuador(idActuador) {
+	var alerta = new Alerta();
+	alerta.tipoAlerta = "Actuador inactivo";
+	alerta.activa = true;
+	alerta.fecha = new Date();
+	alerta.dispositivoAlerta = idActuador;
+	alerta.save();
+	console.log("Nueva alerta actuador.");
+}
 
-	module.exports = function(app, express) {
+function actualizarHB(idSens) {
+	Sensor.find({ idSensor: idSens }, function(err, sensor) {
+		if (err) console.log(err);
+		if (sensor[0].heartBeat1 == null) sensor[0].heartBeat1 = new Date();
+		else sensor[0].heartBeat1 = sensor[0].heartBeat2;
+		sensor[0].heartBeat2 = new Date();
+		sensor[0].save();
+		if (idSens.endsWith("T")) {
+			var maxHB = limits.hbTemp;
+		}
+		if (idSens.endsWith("G")) {
+			var maxHB = limits.hbGas;
+		}
+		if (idSens.endsWith("N")) {
+			var maxHB = limits.hbNoise;
+		}
+		if (idSens.endsWith("L")) {
+			var maxHB = limits.hbLight;
+		}
+		if (sensor[0].heartBeat2 - sensor[0].heartBeat1 > maxHB) {
+			crearAlertaFL(idSens);
+		}
+	});
+}
 
-		var apiRouter = express.Router();
+function crearAlertaFL(idSensor) {
+	var alerta = new Alerta();
+	alerta.tipoAlerta = "Sensor fuera de línea.";
+	alerta.activa = true;
+	alerta.fecha = new Date();
+	alerta.dispositivoAlerta = idSensor;
+	alerta.save();
+	console.log("Nueva alerta fuera de línea.");
+}
 
-		////////////////////////////////////////////////////////////////////////////////
-		//  Middleware
-		////////////////////////////////////////////////////////////////////////////////
-		apiRouter.use(function(req, res, next) {
-			if (req.body.idSensor && req.body.valorMedida) fueraDeRango(req.body.idSensor, req.body.valorMedida);
-			next(); // make sure we go to the next routes and don't stop here
-		});
+module.exports = function(app, express) {
 
-		////////////////////////////////////////////////////////////////////////////////
-		// Rutas para manejar el CRUD de data (http://localhost:8080/data)
-		////////////////////////////////////////////////////////////////////////////////
+	var apiRouter = express.Router();
 
-		apiRouter.route('/')
-
-			.post(function(req, res) {
-				var data = new Medicion();
-				data.idSensor = req.body.idSensor;
-				data.fechaMedida = new Date();
-				data.valorMedida = req.body.valorMedida;
-				data.save(function(err) {
-					if (err) return res.json({ success: false, message: err.message });
-					actualizarHB(req.body.idSensor);
-					res.json({ message: '¡Dato guardado!' });
-				});
-			})
-
-			.get(function(req, res) {
-				Medicion.find({}, function(err, datos) {
-					if (err) res.send(err);
-					res.json(datos);
-				});
+	////////////////////////////////////////////////////////////////////////////////
+	//  Middleware
+	////////////////////////////////////////////////////////////////////////////////
+	apiRouter.use(function(req, res, next) {
+		var token = req.body.token || req.query.token || req.headers['x-access-token'];
+		// decode token
+		if (token) {
+			// verifies secret and checks exp
+			jwt.verify(token, superSecret, function(err, decoded) {
+				if (err) {
+					res.status(403).send({
+						success: false,
+						message: 'Failed to authenticate token.'
+					});
+				} else {
+					// if everything is good, save to request for use in other routes
+					req.decoded = decoded;
+					//if (req.body.idSensor && req.body.valorMedida) fueraDeRango(req.body.idSensor, req.body.valorMedida);
+					next(); // make sure we go to the next routes and don't stop here
+				}
 			});
+		} else {
+			// if there is no token return an HTTP response of 403 (access forbidden) and an error message
+			res.status(403).send({
+				success: false,
+				message: 'No token provided.'
+			});
+		}
+	});
 
-		return apiRouter;
-	};
+	////////////////////////////////////////////////////////////////////////////////
+	// Rutas para manejar el CRUD de data (http://localhost:8080/data)
+	////////////////////////////////////////////////////////////////////////////////
+
+	apiRouter.route('/')
+
+		.post(function(req, res) {
+			var data = new Medicion();
+			data.idSensor = req.body.idSensor;
+			data.fechaMedida = new Date();
+			data.valorMedida = req.body.valorMedida;
+			data.save(function(err) {
+				if (err) return res.json({ success: false, message: err.message });
+				//	actualizarHB(req.body.idSensor);
+				res.json({ message: '¡Dato guardado!' });
+			});
+		})
+
+		.get(function(req, res) {
+			Medicion.find({}, function(err, datos) {
+				if (err) res.send(err);
+				res.json(datos);
+			});
+		});
+
+	apiRouter.route('/auth')
+		.get(function(req, res) {
+			request(options, function(error, response, body) {
+				if (error) res.send(error);
+				res.json(body);
+			});
+		});
+
+	return apiRouter;
+};

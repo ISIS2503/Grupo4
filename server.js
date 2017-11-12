@@ -39,7 +39,7 @@ var options = {  
 // used for requests that our frontend will make
 app.use(express.static(__dirname + '/public'));
 
-app.use(forceSsl);
+//app.use(forceSsl);
 
 // ROUTES FOR OUR API =================
 // ====================================
