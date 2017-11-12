@@ -9,6 +9,7 @@ var config = require('../../../config');
 
 // super secret for creating tokens
 var superSecret = config.secret;
+var role;
 
 module.exports = function(app, express) {
 
@@ -18,29 +19,30 @@ module.exports = function(app, express) {
 	//  Middleware que verifica el token
 	////////////////////////////////////////////////////////////////////////////////
 	apiRouter.use(function(req, res, next) {
-		// var token = req.body.token || req.query.token || req.headers['x-access-token'];
-		// // decode token
-		// if (token) {
-		//   // verifies secret and checks exp
-		//   jwt.verify(token, superSecret, function(err, decoded) {
-		//     if (err) {
-		//       res.status(403).send({
-		//         success: false,
-		//         message: 'Failed to authenticate token.'
-		//       });
-		//     } else {
-		//       // if everything is good, save to request for use in other routes
-		//       req.decoded = decoded;
-		next(); // make sure we go to the next routes and don't stop here
-		//     }
-		//   });
-		// } else {
-		//   // if there is no token return an HTTP response of 403 (access forbidden) and an error message
-		//   res.status(403).send({
-		//     success: false,
-		//     message: 'No token provided.'
-		//   });
-		// }
+		var token = req.body.token || req.query.token || req.headers['x-access-token'];
+		// decode token
+		if (token) {
+			// verifies secret and checks exp
+			jwt.verify(token, superSecret, function(err, decoded) {
+				if (err) {
+					res.status(403).send({
+						success: false,
+						message: 'Failed to authenticate token.'
+					});
+				} else {
+					// if everything is good, save to request for use in other routes
+					req.decoded = decoded;
+					role = req.decoded.rol;
+					next(); // make sure we go to the next routes and don't stop here
+				}
+			});
+		} else {
+			// if there is no token return an HTTP response of 403 (access forbidden) and an error message
+			res.status(403).send({
+				success: false,
+				message: 'No token provided.'
+			});
+		}
 	});
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -65,14 +67,21 @@ module.exports = function(app, express) {
 		})
 
 		.delete(function(req, res) {
-			Alerta.remove({
-				_id: req.params.alerta_id
-			}, function(err, alerta) {
-				if (err) res.send(err);
-				res.json({
-					message: 'Alerta eliminada.'
+			if (role == "Supervisor") {
+				return res.json({
+					success: false,
+					message: 'No estás autorizado.'
 				});
-			});
+			} else {
+				Alerta.remove({
+					_id: req.params.alerta_id
+				}, function(err, alerta) {
+					if (err) res.send(err);
+					res.json({
+						message: 'Alerta eliminada.'
+					});
+				});
+			}
 		});
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -172,30 +181,95 @@ module.exports = function(app, express) {
 		})
 
 		.get(function(req, res) {
-			Reporte.find({}, function(err, reportes) {
-				if (err) res.send(err);
-				res.json(reportes);
-			});
+			if (role != "Supervisor") {
+				return res.json({
+					success: false,
+					message: 'No estás autorizado.'
+				});
+			} else {
+				Reporte.find({}, function(err, reportes) {
+					if (err) res.send(err);
+					res.json(reportes);
+				});
+			}
 		});
 
 
 	apiRouter.route('/reportes/:reporte_id')
 		.get(function(req, res) {
-			Reporte.findById(req.params.reporte_id, function(err, reporte) {
-				if (err) res.send(err);
-				res.json(reporte);
-			});
+			if (role != "Supervisor") {
+				return res.json({
+					success: false,
+					message: 'No estás autorizado.'
+				});
+			} else {
+				Reporte.findById(req.params.reporte_id, function(err, reporte) {
+					if (err) res.send(err);
+					res.json(reporte);
+				});
+			}
 		})
 
 		.delete(function(req, res) {
-			Reporte.remove({
-				_id: req.params.reporte_id
-			}, function(err, reporte) {
-				if (err) res.send(err);
-				res.json({
-					message: 'Reporte eliminado.'
+			if (role != "Supervisor") {
+				return res.json({
+					success: false,
+					message: 'No estás autorizado.'
 				});
-			});
+			} else {
+				Reporte.remove({
+					_id: req.params.reporte_id
+				}, function(err, reporte) {
+					if (err) res.send(err);
+					res.json({
+						message: 'Reporte eliminado.'
+					});
+				});
+			}
+		});
+
+	apiRouter.route('/micros')
+
+		.post(function(req, res) {
+			if (role != "Supervisor") {
+				return res.json({
+					success: false,
+					message: 'No estás autorizado.'
+				});
+			} else {
+				var micro = new Micro();
+				Ubicacion.findOne({
+						area: req.body.area,
+						nivel: req.body.nivel
+					},
+					function(err, ubi) {
+						if (err) res.send(err);
+						if (ubi != null) {
+							micro.ubicacion = ubi._id;
+							console.log(ubi);
+							micro.idMicro = req.body.idMicro;
+							micro.save(function(err) {
+								if (err) {
+									if (err.code == 11000) return res.json({
+										success: false,
+										message: 'Ese micro ya existe.'
+									});
+									else return res.json({
+										success: false,
+										message: err.message
+									});
+								} else {
+									res.json({
+										message: '¡Micro creado!'
+									});
+								}
+							});
+						} else return res.json({
+							success: false,
+							message: 'No se ha encontrado la ubicación.'
+						});
+					});
+			}
 		});
 
 	return apiRouter;

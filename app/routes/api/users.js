@@ -5,6 +5,7 @@ var config = require('../../../config');
 
 // super secret for creating tokens
 var superSecret = config.secret;
+var role;
 
 module.exports = function(app, express) {
 
@@ -70,6 +71,7 @@ module.exports = function(app, express) {
 				} else {
 					// if everything is good, save to request for use in other routes
 					req.decoded = decoded;
+					role = req.decoded.rol;
 					next(); // make sure we go to the next routes and don't stop here
 				}
 			});
@@ -82,82 +84,116 @@ module.exports = function(app, express) {
 		}
 	});
 
-
 	////////////////////////////////////////////////////////////////////////////////
 	// Rutas para manejar el CRUD de usuarios (http://localhost:8080/devices/users)
 	////////////////////////////////////////////////////////////////////////////////
 	apiRouter.route('/')
 
 		.post(function(req, res) {
-
-			var user = new User();
-			user.name = req.body.name;
-			user.username = req.body.username;
-			user.password = req.body.password;
-			user.rol = req.body.rol;
-			user.email = req.body.email;
-
-			user.save(function(err) {
-				if (err) {
-					if (err.code == 11000) return res.json({
-						success: false,
-						message: 'Ya existe un usuario con ese username o email. '
-					});
-					else return res.send(err);
-				}
-				res.json({
-					message: '¡Usuario creado!'
+			if (role != "Supervisor") {
+				return res.json({
+					success: false,
+					message: 'No estás autorizado.'
 				});
-			});
+			} else {
+				var user = new User();
+				user.name = req.body.name;
+				user.username = req.body.username;
+				user.password = req.body.password;
+				user.rol = req.body.rol;
+				user.email = req.body.email;
+
+				user.save(function(err) {
+					if (err) {
+						if (err.code == 11000) return res.json({
+							success: false,
+							message: 'Ya existe un usuario con ese username o email. '
+						});
+						else return res.send(err);
+					}
+					res.json({
+						message: '¡Usuario creado!'
+					});
+				});
+			}
 		})
 
 		.get(function(req, res) {
-			User.find({}, function(err, users) {
-				if (err) res.send(err);
-				res.json(users);
-			});
+			if (role != "Supervisor") {
+				return res.json({
+					success: false,
+					message: 'No estás autorizado.'
+				});
+			} else {
+				User.find({}, function(err, users) {
+					if (err) res.send(err);
+					res.json(users);
+				});
+			}
 		});
 
 	apiRouter.get('/me', function(req, res) {
+		console.log(req.decoded.rol);
 		res.send(req.decoded);
 	});
 
 	apiRouter.route('/:user_id')
 
 		.get(function(req, res) {
-			User.findById(req.params.user_id, function(err, user) {
-				if (err) res.send(err);
-				res.json(user);
-			});
+			if (role != "Supervisor") {
+				return res.json({
+					success: false,
+					message: 'No estás autorizado.'
+				});
+			} else {
+				User.findById(req.params.user_id, function(err, user) {
+					if (err) res.send(err);
+					res.json(user);
+				});
+			}
 		})
 
 		.put(function(req, res) {
-			User.findById(req.params.user_id, function(err, user) {
-				if (err) res.send(err);
-				if (req.body.name) user.name = req.body.name;
-				if (req.body.username) user.username = req.body.username;
-				if (req.body.password) user.password = req.body.password;
-				if (req.body.rol) user.password = req.body.rol;
-				if (req.body.email) user.email = req.body.email;
-
-				user.save(function(err) {
+			if (role != "Supervisor") {
+				return res.json({
+					success: false,
+					message: 'No estás autorizado.'
+				});
+			} else {
+				User.findById(req.params.user_id, function(err, user) {
 					if (err) res.send(err);
-					res.json({
-						message: '¡Usuario actualizado!'
+					if (req.body.name) user.name = req.body.name;
+					if (req.body.username) user.username = req.body.username;
+					if (req.body.password) user.password = req.body.password;
+					if (req.body.rol) user.password = req.body.rol;
+					if (req.body.email) user.email = req.body.email;
+
+					user.save(function(err) {
+						if (err) res.send(err);
+						res.json({
+							message: '¡Usuario actualizado!'
+						});
 					});
 				});
-			});
+			}
 		})
 
 		.delete(function(req, res) {
-			User.remove({
-				_id: req.params.user_id
-			}, function(err, user) {
-				if (err) res.send(err);
-				res.json({
-					message: 'Usuario eliminado.'
+			if (role != "Supervisor") {
+				return res.json({
+					success: false,
+					message: 'No estás autorizado.'
 				});
-			});
+			} else {
+				User.remove({
+					_id: req.params.user_id
+				}, function(err, user) {
+					if (err) res.send(err);
+					res.json({
+						message: 'Usuario eliminado.'
+					});
+				});
+			}
 		});
 
 	return apiRouter;
