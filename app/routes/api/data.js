@@ -84,7 +84,7 @@ function encenderActuadorZona(sensor, idMic) {
 		function(err, rpta) {
 			if (err) console.log(err);
 			else {
-				if (rpta[0].idActu != null) {
+				if (rpta.length > 0) {
 					Actuador.findById(rpta[0].idActu, function(err, datos) {
 						if (err) console.log(err);
 						datos.activo = true;
@@ -206,7 +206,7 @@ module.exports = function(app, express) {
 				} else {
 					// if everything is good, save to request for use in other routes
 					req.decoded = decoded;
-					//if (req.body.idSensor && req.body.valorMedida) fueraDeRango(req.body.idSensor, req.body.valorMedida);
+					if (req.body.idSensor && req.body.valorMedida) fueraDeRango(req.body.idSensor, req.body.valorMedida);
 					next(); // make sure we go to the next routes and don't stop here
 				}
 			});
@@ -232,7 +232,7 @@ module.exports = function(app, express) {
 			data.valorMedida = req.body.valorMedida;
 			data.save(function(err) {
 				if (err) return res.json({ success: false, message: err.message });
-				//	actualizarHB(req.body.idSensor);
+				actualizarHB(req.body.idSensor);
 				res.json({ message: '¡Dato guardado!' });
 			});
 		})
