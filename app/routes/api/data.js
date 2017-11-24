@@ -10,25 +10,6 @@ var limits = require('../../../limits');
 var superSecret = config.secret;
 
 ////////////////////////////////////////////////////////////////////////////////
-//  Funciones para obtener el token
-////////////////////////////////////////////////////////////////////////////////
-
-var request = require("request");
-
-var options = {
-	method: 'POST',
-	url: 'https://arquisoft201720-jcbustamante143.auth0.com/oauth/token',
-	headers: { 'content-type': 'application/json' },
-	body: {
-		grant_type: 'client_credentials',
-		client_id: 'yWYUpaQ3fWlaAzCm2LhD3vVmlHg3epQ0',
-		client_secret: 'jDe7pVDYxLU1FhwWgR1IJD1X_-8NSdq5OvONqOrC4XhTo1J91R5WHXzezc21Gold',
-		audience: 'uniandes.edu.co/dataAu'
-	},
-	json: true
-};
-
-////////////////////////////////////////////////////////////////////////////////
 //  Funciones a validar en el Middleware
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -241,14 +222,6 @@ module.exports = function(app, express) {
 			Medicion.find({}, function(err, datos) {
 				if (err) res.send(err);
 				res.json(datos);
-			});
-		});
-
-	apiRouter.route('/auth')
-		.get(function(req, res) {
-			request(options, function(error, response, body) {
-				if (error) res.send(error);
-				res.json(body);
 			});
 		});
 

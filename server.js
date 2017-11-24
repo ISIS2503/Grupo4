@@ -32,7 +32,8 @@ mongoose.connect(config.database);
 
 var options = {  
 	key: fs.readFileSync(config.pkey),
-	cert: fs.readFileSync(config.certi)
+	cert: fs.readFileSync(config.certi),
+	ca: fs.readFileSync(config.ca)
 };
 
 // set static files location
