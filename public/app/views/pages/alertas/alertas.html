@@ -57,8 +57,8 @@
       <td>{{ aler.tipoAlerta }}</td>
       <td>{{ aler.fecha }}</td>
       <td>{{ aler.dispositivoAlerta }}</td>
-      <td><span ng-if="aler.activa" class="glyphicon glyphicon-ok"></span></td>
-      <td><span ng-if="!aler.activa" class="glyphicon glyphicon-remove"></span></td>
+      <td ng-if="aler.activa"><span class="glyphicon glyphicon-ok"></span></td>
+      <td ng-if="!aler.activa"><span class="glyphicon glyphicon-remove"></span></td>
       <td> <a href="# " ng-click="alerta.deleteAlerta(aler._id) " class="btn btn-primary ">Delete</a> </td>
     </tr>
   </tbody>

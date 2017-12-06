@@ -19,9 +19,12 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-route.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-animate.js"></script>
-	<script src="/scripts/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+	<!-- <script src="assets/js/jquery-3.1.1.min.js"></script>
+	<script src="assets/js/bootstrap.js"></script> -->
 	<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.5.0.js"></script>
-
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 	<!-- controllers -->
 	<script src="app/controllers/mainCtrl.js"></script>
@@ -55,46 +58,45 @@
 	<!-- NAVBAR -->
 	<header>
 		<div class="navbar navbar-inverse" ng-if="main.loggedIn">
-			<div class="container">
+			<div class="container-fluid">
 				<div class="navbar-header">
-					<a href="/" class="navbar-brand"><span class="glyphicon glyphicon-eye-open text-danger center"></span> Sistema de control de la mina Samacá</a>
+					<a href="/" class="navbar-brand"><span class="glyphicon glyphicon-eye-open text-danger center"></span> Mina Samacá</a>
 				</div>
 				<ul class="nav navbar-nav">
 					<li><a href="/users"><span class="glyphicon glyphicon-user"></span> Mi perfil</a></li>
 				</ul>
-				<ul class="nav navbar-nav">
-					<li><a href="/alertas"><span class="glyphicon glyphicon-user"></span> Alertas</a></li>
-				</ul>
-				<ul class="nav navbar-nav">
-					<li><a href="/alertas/tipo"><span class="glyphicon glyphicon-user"></span> Alertas por Tipo</a></li>
-				</ul>
-				<ul class="nav navbar-nav">
-					<li><a href="/alertas/device"><span class="glyphicon glyphicon-user"></span> Alertas por Dispositivo</a></li>
-				</ul>
-				<ul class="nav navbar-nav">
-					<li><a href="/alertas/fecha"><span class="glyphicon glyphicon-user"></span> Alertas por Fecha</a></li>
-				</ul>
-				<ul ng-if="main.role " class="nav navbar-nav">
-					<li><a href="/reportes"><span class="glyphicon glyphicon-user"></span> Reportes</a></li>
-				</ul>
-				<ul ng-if="main.role " class="nav navbar-nav">
-					<li><a href="/reportes/fecha"><span class="glyphicon glyphicon-user"></span> Reportes por Fecha</a></li>
-				</ul>
-				<ul ng-if="main.role " class="nav navbar-nav">
-					<li><a href="/ubicaciones"><span class="glyphicon glyphicon-user"></span> Ubicaciones</a></li>
-				</ul>
-				<ul ng-if="main.role " class="nav navbar-nav">
-					<li><a href="/sensores"><span class="glyphicon glyphicon-user"></span> Sensores</a></li>
-				</ul>
-				<ul ng-if="main.role " class="nav navbar-nav">
-					<li><a href="/micros"><span class="glyphicon glyphicon-user"></span> Microcontroladores</a></li>
-				</ul>
-				<ul ng-if="main.role " class="nav navbar-nav">
-					<li><a href="/actuadores"><span class="glyphicon glyphicon-user"></span> Actuadores</a></li>
-				</ul>
-				<ul ng-if="main.role " class="nav navbar-nav">
-					<li><a href="/dashboard"><span class="glyphicon glyphicon-user"></span> Datos históricos</a></li>
-				</ul>
+				<div class="navbar-header dropdown">
+					<button class="dropbtn">Alertas</button>
+					<div class="dropdown-content">
+						<a href="/alertas">Todas</a>
+						<a href="/alertas/fecha">Alertas por fecha</a>
+						<a href="/alertas/device">Alertas por dispositivo</a>
+						<a href="/alertas/tipo">Alertas por tipo</a>
+					</div>
+				</div>
+				<div ng-if="main.role " class="navbar-header dropdown">
+					<button class="dropbtn">Reportes</button>
+					<div class="dropdown-content">
+						<a href="/reportes">Todos</a>
+						<a href="/reportes/fecha">Reportes por fecha</a>
+					</div>
+				</div>
+				<div ng-if="main.role " class="navbar-header dropdown">
+					<button class="dropbtn">Dispositivos</button>
+					<div class="dropdown-content">
+						<a href="/sensores">Sensores</a>
+						<a href="/micros">Microcontroladores</a>
+						<a href="/actuadores">Actuadores</a>
+						<a href="/ubicaciones">Ubicaciones</a>
+					</div>
+				</div>
+				<div ng-if="main.role " class="navbar-header dropdown">
+					<button class="dropbtn">Datos históricos</button>
+					<div class="dropdown-content">
+						<a href="#">Históricos por sensor</a>
+						<a href="#">Históricos por fecha</a>
+					</div>
+				</div>
 				<ul class="nav navbar-nav navbar-right">
 					<li ng-if="main.loggedIn " class="navbar-text">Hola, {{ main.user.name}}</li>
 					<li ng-if="main.loggedIn"><a href="#" ng-click="main.doLogout()">Salir</a></li>
@@ -108,8 +110,6 @@
 		<div ng-view></div>
 	</main>
 
-	<script src="assets/js/jquery-3.1.1.min.js"></script>
-	<script src="assets/js/bootstrap.js"></script>
 </body>
 
 </html>

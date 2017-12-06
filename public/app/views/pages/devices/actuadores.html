@@ -20,8 +20,8 @@
     <tr ng-repeat="act in actuador.actuadores | pagination: (actuador.currentPage - 1) * actuador.pageSize | limitTo: actuador.pageSize">
       <td>{{ act.idActuador }}</td>
       <td>{{ act.ubicacion }}</td>
-      <td><span ng-if="act.activo" class="glyphicon glyphicon-ok"></span></td>
-      <td><span ng-if="!act.activo" class="glyphicon glyphicon-remove"></span></td>
+      <td ng-if="act.activo"><span class="glyphicon glyphicon-ok"></span></td>
+      <td ng-if="!act.activo"><span class="glyphicon glyphicon-remove"></span></td>
       <td>{{ act.tiempoEnUso }}</td>
       <td> <a href="#" ng-click="actuador.deleteActuador(act._id)" class="btn btn-primary">Delete</a> </td>
     </tr>
