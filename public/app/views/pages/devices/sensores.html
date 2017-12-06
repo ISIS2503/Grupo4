@@ -1,0 +1,28 @@
+<div class="page-header">
+  <h1>Sensores</h1>
+</div>
+<div class="jumbotron text-center" ng-show="sensor.processing">
+  <span class="glyphicon glyphicon-repeat spinner"></span>
+  <p>Cargando lista de sensores...</p>
+</div>
+
+<table class="table table-bordered table-striped" ng-show="sensor.sensores">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Tipo</th>
+      <th>Microcontrolador</th>
+      <th>Último Dato</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="sens in sensor.sensores">
+      <td>{{ sens.idSensor }}</td>
+      <td>{{ sens.tipoSensor }}</td>
+      <td>{{ sens.idMicro }}</td>
+      <td>{{ sens.heartBeat1 }}</td>
+      <td> <a href="#" ng-click="sensor.deleteSensor(sens._id)" class="btn btn-primary">Delete</a> </td>
+    </tr>
+  </tbody>
+</table>

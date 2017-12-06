@@ -25,17 +25,18 @@ module.exports = function(app, express) {
 			if (!user) {
 				res.json({
 					success: false,
-					message: 'Authentication failed. User not found.'
+					message: 'Usuario no válido. Vuelve a intentar.'
 				});
 			} else if (user) {
 				var validPassword = user.comparePassword(req.body.password);
 				if (!validPassword) {
 					res.json({
 						success: false,
-						message: 'Authentication failed. Wrong password.'
+						message: 'Contraseña incorrecta. Vuelve a intentar.'
 					});
 				} else {
 					var token = jwt.sign({
+						id: user._id,
 						rol: user.rol,
 						email: user.email,
 						name: user.name,
@@ -133,7 +134,6 @@ module.exports = function(app, express) {
 		});
 
 	apiRouter.get('/me', function(req, res) {
-		console.log(req.decoded.rol);
 		res.send(req.decoded);
 	});
 
@@ -164,7 +164,6 @@ module.exports = function(app, express) {
 					if (err) res.send(err);
 					if (req.body.name) user.name = req.body.name;
 					if (req.body.username) user.username = req.body.username;
-					if (req.body.password) user.password = req.body.password;
 					if (req.body.rol) user.password = req.body.rol;
 					if (req.body.email) user.email = req.body.email;
 

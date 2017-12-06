@@ -158,7 +158,7 @@ function actualizarHB(idSens) {
 
 function crearAlertaFL(idSensor) {
 	var alerta = new Alerta();
-	alerta.tipoAlerta = "Sensor fuera de línea.";
+	alerta.tipoAlerta = "Sensor fuera de línea";
 	alerta.activa = true;
 	alerta.fecha = new Date();
 	alerta.dispositivoAlerta = idSensor;

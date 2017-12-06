@@ -1,72 +1,93 @@
 angular.module('app.routes', ['ngRoute'])
 
-.config(function($routeProvider, $locationProvider) {
+	.config(function($routeProvider, $locationProvider) {
 
-	$routeProvider
+		$routeProvider
 
-		// route for the home page
-		.when('/', {
-			templateUrl : 'app/views/pages/home.html'
-		})
+			// route for the home page
+			.when('/', {
+				templateUrl: 'app/views/pages/home.html',
+				controller: 'mainController',
+				controllerAs: 'login'
+			})
 
-		// login page
-		.when('/login', {
-			templateUrl : 'app/views/pages/login.html',
-   			controller  : 'mainController',
-    			controllerAs: 'login'
-		})
+			.when('/users', {
+				templateUrl: 'app/views/pages/users/me.html'
+			})
 
-		// show all niveles
-		.when('/ubicacion/nivel', {
-			templateUrl: 'app/views/pages/data/nivel.html',
-			controller: 'ubicacionController',
-			controllerAs: 'ubicacion'
-		})
-		//muestra un nivel
-		.when('/ubicacion/nivel/:nivel_id', {
-			templateUrl: 'app/views/pages/data/nivel.html',
-			controller: 'ubicacionController',
-			controllerAs: 'ubicacion'
-		})
-		// form to create a new user
-		// same view as edit page
-		// .when('/users/create', {
-		// 	templateUrl: 'app/views/pages/users/single.html',
-		// 	controller: 'userCreateController',
-		// 	controllerAs: 'user'
-		// })
+			// show all users
+			.when('/users/:user_id', {
+				templateUrl: 'app/views/pages/users/edit.html',
+				controller: 'userEditController',
+				controllerAs: 'user'
+			})
 
-		// page to edit a nivel
-		.when('/ubicacion/nivel/:nivel_id', {
-			templateUrl: 'app/views/pages/data/nivel.html',
-			controller: 'ubicacionEditController',
-			controllerAs: 'ubicacion'
-		})
-		//muestra todas las áreas
-		.when('/ubicacion/nivel/:nivel_id/area', {
-			templateUrl: 'app/views/pages/data/area.html',
-			controller: 'ubicacionController',
-			controllerAs: 'ubicacion'
-		})
-		//Muestra una área
-		.when('/ubicacion/nivel/:nivel_id/area/:area_id', {
-			templateUrl: 'app/views/pages/data/area.html',
-			controller: 'ubicacionController',
-			controllerAs: 'ubicacion'
-		})
-		//Muestra datos de un área especifica
-		.when('/ubicacion/nivel/:nivel_id/area/:area_id/datos', {
-			templateUrl: 'app/views/pages/data/datos.html',
-			controller: 'sensorController',
-			controllerAs: 'sensor'
-		})
-		//Muestra alertas generadas en un área especifica
-		.when('/ubicacion/nivel/:nivel_id/area/:area_id/alertas', {
-			templateUrl: 'app/views/pages/data/alertas.html',
-			controller: 'alertaController',
-			controllerAs: 'alerta'
-		});
+			.when('/alertas', {
+				templateUrl: 'app/views/pages/alertas/alertas.html',
+				controller: 'alertaController',
+				controllerAs: 'alerta'
+			})
 
-	$locationProvider.html5Mode(true);
+			.when('/alertas/tipo', {
+				templateUrl: 'app/views/pages/alertas/alertas.html',
+				controller: 'alertaTipoController',
+				controllerAs: 'alerta'
+			})
 
-});
+			.when('/alertas/fecha', {
+				templateUrl: 'app/views/pages/alertas/alertas.html',
+				controller: 'alertaFechaController',
+				controllerAs: 'alerta'
+			})
+
+			.when('/alertas/device', {
+				templateUrl: 'app/views/pages/alertas/alertas.html',
+				controller: 'alertaDeviceController',
+				controllerAs: 'alerta'
+			})
+
+			.when('/reportes', {
+				templateUrl: 'app/views/pages/reportes/reportes.html',
+				controller: 'reporteController',
+				controllerAs: 'reporte'
+			})
+
+			.when('/reportes/fecha', {
+				templateUrl: 'app/views/pages/reportes/reportes.html',
+				controller: 'reporteFechaController',
+				controllerAs: 'reporte'
+			})
+
+			.when('/ubicaciones', {
+				templateUrl: 'app/views/pages/devices/ubicaciones.html',
+				controller: 'ubicacionController',
+				controllerAs: 'ubicacion'
+			})
+
+			.when('/actuadores', {
+				templateUrl: 'app/views/pages/devices/actuadores.html',
+				controller: 'actuadorController',
+				controllerAs: 'actuador'
+			})
+
+			.when('/micros', {
+				templateUrl: 'app/views/pages/devices/micros.html',
+				controller: 'microController',
+				controllerAs: 'micro'
+			})
+
+			.when('/sensores', {
+				templateUrl: 'app/views/pages/devices/sensores.html',
+				controller: 'sensorController',
+				controllerAs: 'sensor'
+			})
+
+			.when('/dashboard', {
+				templateUrl: 'app/views/pages/data/dashboard.html',
+				controller: 'dashboardController',
+				controllerAs: 'dashboard'
+			});
+
+		$locationProvider.html5Mode(true);
+
+	});

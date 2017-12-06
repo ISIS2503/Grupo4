@@ -1,0 +1,24 @@
+<div class="page-header">
+  <h1>Microcontroladores</h1>
+</div>
+<div class="jumbotron text-center" ng-show="micro.processing">
+  <span class="glyphicon glyphicon-repeat spinner"></span>
+  <p>Cargando lista de microcontroladores...</p>
+</div>
+
+<table class="table table-bordered table-striped" ng-show="micro.micros">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Ubicación</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="mic in micro.micros">
+      <td>{{ mic.idMicro }}</td>
+      <td>{{ mic.ubicacion }}</td>
+      <td> <a href="#" ng-click="micro.deleteMicro(mic._id)" class="btn btn-primary">Delete</a> </td>
+    </tr>
+  </tbody>
+</table>

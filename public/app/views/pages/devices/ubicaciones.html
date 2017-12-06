@@ -1,0 +1,24 @@
+<div class="page-header">
+  <h1>Ubicaciones</h1>
+</div>
+<div class="jumbotron text-center" ng-show="ubicacion.processing">
+  <span class="glyphicon glyphicon-repeat spinner"></span>
+  <p>Cargando lista de ubicaciones...</p>
+</div>
+
+<table class="table table-bordered table-striped" ng-show="ubicacion.ubicaciones">
+  <thead>
+    <tr>
+      <th>Área</th>
+      <th>Nivel</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="ubi in ubicacion.ubicaciones">
+      <td>{{ ubi.area }}</td>
+      <td>{{ ubi.nivel }}</td>
+      <td> <a href="#" ng-click="ubicacion.deleteUbicacion(ubi._id)" class="btn btn-primary">Delete</a> </td>
+    </tr>
+  </tbody>
+</table>

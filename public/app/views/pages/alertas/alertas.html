@@ -1,0 +1,64 @@
+<div class="page-header">
+  <h1>Alertas</h1>
+</div>
+<div class="jumbotron text-center" ng-show="alerta.processing">
+  <span class="glyphicon glyphicon-repeat spinner"></span>
+  <p>Cargando lista de alertas...</p>
+</div>
+
+<form class="form-horizontal" ng-submit="alerta.tipoAlerta()" ng-if="alerta.type == 'tipo'">
+  <div class="form-group ">
+    <label class="col-sm-2 control-label ">Tipo</label>
+    <div class="col-sm-6 ">
+      <input type="text " class="form-control " ng-model="alerta.alertaData.tipo">
+    </div>
+  </div>
+  <div class="form-group ">
+    <button type="submit " class="btn btn-success btn-lg btn-block ">Buscar</button>
+  </div>
+</form>
+
+<form class="form-horizontal" ng-submit="alerta.deviceAlerta()" ng-if="alerta.type == 'device'">
+  <div class="form-group ">
+    <label class="col-sm-2 control-label ">Dispositivo</label>
+    <div class="col-sm-6 ">
+      <input type="text " class="form-control " ng-model="alerta.alertaData.device">
+    </div>
+  </div>
+  <div class="form-group ">
+    <button type="submit " class="btn btn-success btn-lg btn-block ">Buscar</button>
+  </div>
+</form>
+
+<form class="form-horizontal" ng-submit="alerta.fechaAlerta()" ng-if="alerta.type == 'fecha'">
+  <div class="form-group ">
+    <label class="col-sm-2 control-label ">Fecha</label>
+    <div class="col-sm-6 ">
+      <input type="text " class="form-control " ng-model="alerta.alertaData.fecha">
+    </div>
+  </div>
+  <div class="form-group ">
+    <button type="submit " class="btn btn-success btn-lg btn-block ">Buscar</button>
+  </div>
+</form>
+
+<table class="table table-bordered table-striped " ng-show="alerta.alertas ">
+  <thead>
+    <tr>
+      <th>Tipo de Alerta</th>
+      <th>Fecha</th>
+      <th>Dispositivo Alerta</th>
+      <th>Activo</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="aler in alerta.alertas ">
+      <td>{{ aler.tipoAlerta }}</td>
+      <td>{{ aler.fecha }}</td>
+      <td>{{ aler.dispositivoAlerta }}</td>
+      <td>{{ aler.activa }}</td>
+      <td> <a href="# " ng-click="alerta.deleteAlerta(aler._id) " class="btn btn-primary ">Delete</a> </td>
+    </tr>
+  </tbody>
+</table>

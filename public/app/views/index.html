@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<title>Sistema de control de la mina Samacá</title>
@@ -20,36 +21,32 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular-animate.js"></script>
 
 	<!-- controllers -->
-	<script src="app/components/mainCtrl.js"></script>
-	<script src="app/components/usuario/controladores/usuarioController.js"></script>
-	<script src="app/components/actuadores/actuadorController.js"></script>
-	<script src="app/components/alerta/alertaController.js"></script>
-	<script src="app/components/microcontrolador/microController.js"></script>
-	<script src="app/components/reporte/reporteController.js"></script>
-	<script src="app/components/sensor/sensorController.js"></script>
-	<script src="app/components/tableroControl/dashboardController.js"></script>
-	<script src="app/components/ubicacion/ubicacionController.js"></script>
-
-
-
+	<script src="app/controllers/mainCtrl.js"></script>
+	<script src="app/controllers/usuarioController.js"></script>
+	<script src="app/controllers/actuadorController.js"></script>
+	<script src="app/controllers/alertaController.js"></script>
+	<script src="app/controllers/microController.js"></script>
+	<script src="app/controllers/sensorController.js"></script>
+	<script src="app/controllers/ubicacionController.js"></script>
+	<script src="app/controllers/reporteController.js"></script>
+	<!-- 	<script src="app/components/tableroControl/dashboardController.js"></script>	 -->
 
 	<!-- services -->
-	<script src="app/components/usuario/servicios/authService.js"></script>
-	<script src="app/components/usuario/servicios/usuarioService.js"></script>
-	<script src="app/components/actuadores/actuadorService.js"></script>
-	<script src="app/components/alerta/alertaService.js"></script>
-	<script src="app/components/microcontrolador/microService.js"></script>
-	<script src="app/components/reporte/reporteService.js"></script>
-	<script src="app/components/sensor/sensorService.js"></script>
-	<script src="app/components/tableroControl/dashboardService.js"></script>
-	<script src="app/components/ubicacion/ubicacionService.js"></script>
-
-
+	<script src="app/services/authService.js"></script>
+	<script src="app/services/usuarioService.js"></script>
+	<script src="app/services/actuadorService.js"></script>
+	<script src="app/services/sensorService.js"></script>
+	<script src="app/services/alertaService.js"></script>
+	<script src="app/services/microService.js"></script>
+	<script src="app/services/ubicacionService.js"></script>
+	<script src="app/services/reporteService.js"></script>
+	<!-- 	<script src="app/components/tableroControl/dashboardService.js"></script>	 -->
 
 	<!-- main Angular app files -->
 	<script src="app/app.routes.js"></script>
 	<script src="app/app.js"></script>
 </head>
+
 <body ng-app="app" ng-controller="mainController as main">
 
 	<!-- NAVBAR -->
@@ -59,9 +56,44 @@
 				<div class="navbar-header">
 					<a href="/" class="navbar-brand"><span class="glyphicon glyphicon-eye-open text-danger center"></span> Sistema de control de la mina Samacá</a>
 				</div>
-
+				<ul class="nav navbar-nav">
+					<li><a href="/users"><span class="glyphicon glyphicon-user"></span> Mi perfil</a></li>
+				</ul>
+				<ul class="nav navbar-nav">
+					<li><a href="/alertas"><span class="glyphicon glyphicon-user"></span> Alertas</a></li>
+				</ul>
+				<ul class="nav navbar-nav">
+					<li><a href="/alertas/tipo"><span class="glyphicon glyphicon-user"></span> Alertas por Tipo</a></li>
+				</ul>
+				<ul class="nav navbar-nav">
+					<li><a href="/alertas/device"><span class="glyphicon glyphicon-user"></span> Alertas por Dispositivo</a></li>
+				</ul>
+				<ul class="nav navbar-nav">
+					<li><a href="/alertas/fecha"><span class="glyphicon glyphicon-user"></span> Alertas por Fecha</a></li>
+				</ul>
+				<ul ng-if="main.role " class="nav navbar-nav">
+					<li><a href="/reportes"><span class="glyphicon glyphicon-user"></span> Reportes</a></li>
+				</ul>
+				<ul ng-if="main.role " class="nav navbar-nav">
+					<li><a href="/reportes/fecha"><span class="glyphicon glyphicon-user"></span> Reportes por Fecha</a></li>
+				</ul>
+				<ul ng-if="main.role " class="nav navbar-nav">
+					<li><a href="/ubicaciones"><span class="glyphicon glyphicon-user"></span> Ubicaciones</a></li>
+				</ul>
+				<ul ng-if="main.role " class="nav navbar-nav">
+					<li><a href="/sensores"><span class="glyphicon glyphicon-user"></span> Sensores</a></li>
+				</ul>
+				<ul ng-if="main.role " class="nav navbar-nav">
+					<li><a href="/micros"><span class="glyphicon glyphicon-user"></span> Microcontroladores</a></li>
+				</ul>
+				<ul ng-if="main.role " class="nav navbar-nav">
+					<li><a href="/actuadores"><span class="glyphicon glyphicon-user"></span> Actuadores</a></li>
+				</ul>
+				<ul ng-if="main.role " class="nav navbar-nav">
+					<li><a href="/dashboard"><span class="glyphicon glyphicon-user"></span> Datos históricos</a></li>
+				</ul>
 				<ul class="nav navbar-nav navbar-right">
-					<li ng-if="main.loggedIn" class="navbar-text">Hola, {{ main.user.name }}</li>
+					<li ng-if="main.loggedIn " class="navbar-text">Hola, {{ main.user.name}}</li>
 					<li ng-if="main.loggedIn"><a href="#" ng-click="main.doLogout()">Salir</a></li>
 				</ul>
 			</div>
@@ -73,5 +105,7 @@
 		<div ng-view></div>
 	</main>
 
+
 </body>
+
 </html>

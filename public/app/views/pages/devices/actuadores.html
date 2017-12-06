@@ -1,0 +1,28 @@
+<div class="page-header">
+  <h1>Actuadores</h1>
+</div>
+<div class="jumbotron text-center" ng-show="actuador.processing">
+  <span class="glyphicon glyphicon-repeat spinner"></span>
+  <p>Cargando lista de actuadores...</p>
+</div>
+
+<table class="table table-bordered table-striped" ng-show="actuador.actuadores">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Ubicación</th>
+      <th>Activo</th>
+      <th>Tiempo en Uso</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="act in actuador.actuadores">
+      <td>{{ act.idActuador }}</td>
+      <td>{{ act.ubicacion }}</td>
+      <td>{{ act.activo }}</td>
+      <td>{{ act.tiempoEnUso }}</td>
+      <td> <a href="#" ng-click="actuador.deleteActuador(act._id)" class="btn btn-primary">Delete</a> </td>
+    </tr>
+  </tbody>
+</table>
