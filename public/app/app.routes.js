@@ -82,9 +82,15 @@ angular.module('app.routes', ['ngRoute'])
 				controllerAs: 'sensor'
 			})
 
-			.when('/dashboard', {
-				templateUrl: 'app/views/pages/data/dashboard.html',
-				controller: 'dashboardController',
+			.when('/historico/fecha', {
+				templateUrl: 'app/views/pages/dashboard/dashboard.html',
+				controller: 'dashboardFechaController',
+				controllerAs: 'dashboard'
+			})
+
+			.when('/historico/device', {
+				templateUrl: 'app/views/pages/dashboard/dashboard.html',
+				controller: 'dashboardDeviceController',
 				controllerAs: 'dashboard'
 			});
 

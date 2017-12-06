@@ -15,6 +15,8 @@ angular.module('app', [
 		'alertaService',
 		'reporteCtrl',
 		'reporteService',
+		'dashboardCtrl',
+		'dashboardService',
 		'microCtrl',
 		'microService'
 	])

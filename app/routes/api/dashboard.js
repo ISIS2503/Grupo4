@@ -2,6 +2,7 @@ var bodyParser = require('body-parser'); // get body-parser
 var Alerta = require('../../models/Alerta');
 var Reporte = require('../../models/Reporte');
 var Micro = require('../../models/Micro');
+var Medicion = require('../../models/Medicion');
 var Sensor = require('../../models/Sensor');
 var Ubicacion = require('../../models/Ubicacion');
 var jwt = require('jsonwebtoken');
@@ -48,6 +49,13 @@ module.exports = function(app, express) {
 	////////////////////////////////////////////////////////////////////////////////
 	// Rutas para manejar el CRUD de alertas (http://localhost:8080/dashboard/alertas)
 	////////////////////////////////////////////////////////////////////////////////
+	apiRouter.route('/device')
+		.post(function(req, res) {
+			Medicion.find({ idSensor: req.body.device }, null, { sort: { fecha: 1 } }, function(err, medicion) {
+				if (err) res.send(err);
+				res.json(medicion);
+			});
+		});
 
 	apiRouter.route('/alertas/tipo')
 		.post(function(req, res) {

@@ -1,36 +1,19 @@
 angular.module('dashboardService', [])
 
-.factory('Dashboard', function($http) {
+	.factory('Dashboard', function($http) {
 
-	// create a new object
-	var dashboardFactory = {};
+		// create a new object
+		var dashboardFactory = {};
 
-	// get a single dashboard
-	dashboardFactory.get = function(id) {
-		return $http.get('/dashboards/' + id);
-	};
+		dashboardFactory.fecha = function(dashboardData) {
+			return $http.post('/dashboard/device/', dashboardData);
+		};
 
-	// get all dashboards
-	dashboardFactory.all = function() {
-		return $http.get('/dashboards/');
-	};
+		dashboardFactory.device = function(dashboardData) {
+			return $http.post('/dashboard/device/', dashboardData);
+		};
 
-	// create a dashboard
-	dashboardFactory.create = function(dashboardData) {
-		return $http.post('/dashboards/', dashboardData);
-	};
+		// return our entire dashboardFactory object
+		return dashboardFactory;
 
-	// update a dashboard
-	dashboardFactory.update = function(id, dashboardData) {
-		return $http.put('/dashboards/' + id, dashboardData);
-	};
-
-	// delete a dashboard
-	dashboardFactory.delete = function(id) {
-		return $http.delete('/dashboards/' + id);
-	};
-
-	// return our entire dashboardFactory object
-	return dashboardFactory;
-
-});
+	});

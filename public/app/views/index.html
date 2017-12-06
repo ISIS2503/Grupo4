@@ -35,7 +35,7 @@
 	<script src="app/controllers/sensorController.js"></script>
 	<script src="app/controllers/ubicacionController.js"></script>
 	<script src="app/controllers/reporteController.js"></script>
-	<!-- 	<script src="app/components/tableroControl/dashboardController.js"></script>	 -->
+	<script src="app/controllers/dashboardController.js"></script>
 
 	<!-- services -->
 	<script src="app/services/authService.js"></script>
@@ -46,7 +46,7 @@
 	<script src="app/services/microService.js"></script>
 	<script src="app/services/ubicacionService.js"></script>
 	<script src="app/services/reporteService.js"></script>
-	<!-- 	<script src="app/components/tableroControl/dashboardService.js"></script>	 -->
+	<script src="app/services/dashboardService.js"></script>
 
 	<!-- main Angular app files -->
 	<script src="app/app.routes.js"></script>
@@ -93,8 +93,8 @@
 				<div ng-if="main.role " class="navbar-header dropdown">
 					<button class="dropbtn">Datos históricos</button>
 					<div class="dropdown-content">
-						<a href="#">Históricos por sensor</a>
-						<a href="#">Históricos por fecha</a>
+						<a href="/historico/device">Históricos por sensor</a>
+						<a href="/historico/fecha">Históricos por fecha</a>
 					</div>
 				</div>
 				<ul class="nav navbar-nav navbar-right">
