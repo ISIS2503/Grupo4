@@ -15,10 +15,11 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="mic in micro.micros">
+    <tr ng-repeat="mic in micro.micros | pagination: (micro.currentPage - 1) * micro.pageSize | limitTo: micro.pageSize">
       <td>{{ mic.idMicro }}</td>
       <td>{{ mic.ubicacion }}</td>
       <td> <a href="#" ng-click="micro.deleteMicro(mic._id)" class="btn btn-primary">Delete</a> </td>
     </tr>
   </tbody>
 </table>
+<ul uib-pagination total-items="micro.micros.length" items-per-page="micro.pageSize " ng-model="micro.currentPage "></ul>

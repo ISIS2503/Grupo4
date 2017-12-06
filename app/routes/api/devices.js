@@ -82,7 +82,7 @@ module.exports = function(app, express) {
 		})
 
 		.get(function(req, res) {
-			Sensor.find({}, function(err, sensores) {
+			Sensor.find({}, null, { sort: { idSensor: 1 } }, function(err, sensores) {
 				if (err) res.send(err);
 				res.json(sensores);
 			});
@@ -167,7 +167,7 @@ module.exports = function(app, express) {
 		})
 
 		.get(function(req, res) {
-			Micro.find({}, function(err, micros) {
+			Micro.find({}, null, { sort: { idMicro: 1 } }, function(err, micros) {
 				if (err) res.send(err);
 				res.json(micros);
 			});
@@ -251,7 +251,7 @@ module.exports = function(app, express) {
 		})
 
 		.get(function(req, res) {
-			Actuador.find({}, function(err, actuadores) {
+			Actuador.find({}, null, { sort: { idActuador: 1 } }, function(err, actuadores) {
 				if (err) res.send(err);
 				res.json(actuadores);
 			});
@@ -321,7 +321,7 @@ module.exports = function(app, express) {
 		})
 
 		.get(function(req, res) {
-			Ubicacion.find({}, function(err, ubicaciones) {
+			Ubicacion.find({}, null, { sort: { area: 1 } }, function(err, ubicaciones) {
 				if (err) res.send(err);
 				res.json(ubicaciones);
 			});

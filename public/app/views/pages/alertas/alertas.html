@@ -53,12 +53,14 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="aler in alerta.alertas ">
+    <tr ng-repeat="aler in alerta.alertas | pagination: (alerta.currentPage - 1) * alerta.pageSize | limitTo: alerta.pageSize">
       <td>{{ aler.tipoAlerta }}</td>
       <td>{{ aler.fecha }}</td>
       <td>{{ aler.dispositivoAlerta }}</td>
-      <td>{{ aler.activa }}</td>
+      <td><span ng-if="aler.activa" class="glyphicon glyphicon-ok"></span></td>
+      <td><span ng-if="!aler.activa" class="glyphicon glyphicon-remove"></span></td>
       <td> <a href="# " ng-click="alerta.deleteAlerta(aler._id) " class="btn btn-primary ">Delete</a> </td>
     </tr>
   </tbody>
 </table>
+<ul uib-pagination total-items="alerta.alertas.length" items-per-page="alerta.pageSize " ng-model="alerta.currentPage "></ul>

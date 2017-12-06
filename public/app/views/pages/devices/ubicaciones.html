@@ -15,10 +15,11 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="ubi in ubicacion.ubicaciones">
+    <tr ng-repeat="ubi in ubicacion.ubicaciones | pagination: (ubicacion.currentPage - 1) * ubicacion.pageSize | limitTo: ubicacion.pageSize">
       <td>{{ ubi.area }}</td>
       <td>{{ ubi.nivel }}</td>
       <td> <a href="#" ng-click="ubicacion.deleteUbicacion(ubi._id)" class="btn btn-primary">Delete</a> </td>
     </tr>
   </tbody>
 </table>
+<ul uib-pagination total-items="ubicacion.ubicaciones.length" items-per-page="ubicacion.pageSize " ng-model="ubicacion.currentPage "></ul>

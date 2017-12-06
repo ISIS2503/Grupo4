@@ -32,7 +32,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="rep in reporte.reportes">
+    <tr ng-repeat="rep in reporte.reportes| pagination: (reporte.currentPage - 1) * reporte.pageSize | limitTo: reporte.pageSize">
       <td>{{ rep.fehcha }}</td>
       <td>{{ rep.area }}</td>
       <td>{{ rep.nivel }}</td>
@@ -44,3 +44,4 @@
     </tr>
   </tbody>
 </table>
+<ul uib-pagination total-items="reporte.reportes.length" items-per-page="reporte.pageSize " ng-model="reporte.currentPage "></ul>

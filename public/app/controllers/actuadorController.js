@@ -1,4 +1,4 @@
-angular.module('actuadorCtrl', ['actuadorService'])
+angular.module('actuadorCtrl', ['actuadorService', 'ui.bootstrap'])
 
 	.controller('actuadorController', function(Actuador) {
 
@@ -6,6 +6,8 @@ angular.module('actuadorCtrl', ['actuadorService'])
 
 		// set a processing variable to show loading things
 		vm.processing = true;
+		vm.currentPage = 1;
+		vm.pageSize = 5;
 
 		// grab all the actuadores at page load
 		Actuador.all()
@@ -37,4 +39,10 @@ angular.module('actuadorCtrl', ['actuadorService'])
 				});
 		};
 
+	})
+
+	.filter('pagination', function() {
+		return function(data, start) {
+			return data.slice(start);
+		};
 	});

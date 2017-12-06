@@ -17,7 +17,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr ng-repeat="sens in sensor.sensores">
+    <tr ng-repeat="sens in sensor.sensores | pagination: (sensor.currentPage - 1) * sensor.pageSize | limitTo: sensor.pageSize">
       <td>{{ sens.idSensor }}</td>
       <td>{{ sens.tipoSensor }}</td>
       <td>{{ sens.idMicro }}</td>
@@ -26,3 +26,4 @@
     </tr>
   </tbody>
 </table>
+<ul uib-pagination total-items="sensor.sensores.length" items-per-page="sensor.pageSize " ng-model="sensor.currentPage "></ul>

@@ -1,9 +1,10 @@
-angular.module('reporteCtrl', ['reporteService'])
+angular.module('reporteCtrl', ['reporteService', 'ui.bootstrap'])
 
 	.controller('reporteController', function(Reporte) {
 
 		var vm = this;
-
+		vm.pageSize = 10;
+		vm.currentPage = 1;
 		// set a processing variable to show loading things
 		vm.processing = true;
 
@@ -20,34 +21,17 @@ angular.module('reporteCtrl', ['reporteService'])
 
 	})
 
-	// controller applied to reporte creation page
-	.controller('reporteCreateController', function(Reporte) {
 
-		var vm = this;
-
-		// variable to hide/show elements of the view
-		// differentiates between create or edit pages
-		vm.type = 'create';
-
-		// function to create a reporte
-		vm.saveReporte = function() {
-			vm.processing = true;
-			vm.message = '';
-
-			// use the create function in the reporteService
-			Reporte.create(vm.reporteData)
-				.success(function(data) {
-					vm.processing = false;
-					vm.reporteData = {};
-					vm.message = data.message;
-				});
-
+	.filter('pagination', function() {
+		return function(data, start) {
+			return data.slice(start);
 		};
-
 	})
 
 	.controller('reporteFechaController', function(Reporte) {
 		var vm = this;
+		vm.pageSize = 10;
+		vm.currentPage = 1;
 		// variable to hide/show elements of the view
 		vm.type = 'fecha';
 		vm.fechaReporte = function() {
@@ -64,5 +48,12 @@ angular.module('reporteCtrl', ['reporteService'])
 					vm.reporteData = {};
 					vm.reportes = data;
 				});
+		};
+	})
+
+
+	.filter('pagination', function() {
+		return function(data, start) {
+			return data.slice(start);
 		};
 	});

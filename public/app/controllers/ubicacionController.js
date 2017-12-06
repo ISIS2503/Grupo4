@@ -1,4 +1,4 @@
-angular.module('ubicacionCtrl', ['ubicacionService'])
+angular.module('ubicacionCtrl', ['ubicacionService', 'ui.bootstrap'])
 
 	.controller('ubicacionController', function(Ubicacion) {
 
@@ -6,6 +6,8 @@ angular.module('ubicacionCtrl', ['ubicacionService'])
 
 		// set a processing variable to show loading things
 		vm.processing = true;
+		vm.currentPage = 1;
+		vm.pageSize = 5;
 
 		// grab all the ubicaciones at page load
 		Ubicacion.all()
@@ -37,4 +39,10 @@ angular.module('ubicacionCtrl', ['ubicacionService'])
 				});
 		};
 
+	})
+
+	.filter('pagination', function() {
+		return function(data, start) {
+			return data.slice(start);
+		};
 	});

@@ -1,4 +1,4 @@
-angular.module('microCtrl', ['microService'])
+angular.module('microCtrl', ['microService', 'ui.bootstrap'])
 
 	.controller('microController', function(Micro) {
 
@@ -6,6 +6,8 @@ angular.module('microCtrl', ['microService'])
 
 		// set a processing variable to show loading things
 		vm.processing = true;
+		vm.currentPage = 1;
+		vm.pageSize = 5;
 
 		// grab all the micros at page load
 		Micro.all()
@@ -36,5 +38,10 @@ angular.module('microCtrl', ['microService'])
 
 				});
 		};
+	})
 
+	.filter('pagination', function() {
+		return function(data, start) {
+			return data.slice(start);
+		};
 	});

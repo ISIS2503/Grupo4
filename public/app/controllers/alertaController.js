@@ -1,4 +1,4 @@
-angular.module('alertaCtrl', ['alertaService'])
+angular.module('alertaCtrl', ['alertaService', 'ui.bootstrap'])
 
 	.controller('alertaController', function(Alerta) {
 
@@ -6,6 +6,8 @@ angular.module('alertaCtrl', ['alertaService'])
 
 		// set a processing variable to show loading things
 		vm.processing = true;
+		vm.pageSize = 10;
+		vm.currentPage = 1;
 
 		// grab all the users at page load
 		Alerta.all()
@@ -39,43 +41,16 @@ angular.module('alertaCtrl', ['alertaService'])
 
 	})
 
-	.controller('alertaEditController', function($routeParams, Alerta) {
-
-		var vm = this;
-
-		// variable to hide/show elements of the view
-		// differentiates between create or edit pages
-		vm.type = 'edit';
-
-		// get the user data for the user you want to edit
-		// $routeParams is the way we grab data from the URL
-		Alerta.get($routeParams.alerta_id)
-			.success(function(data) {
-				vm.alertaData = data;
-			});
-
-		// function to save the user
-		vm.saveAlerta = function() {
-			vm.processing = true;
-			vm.message = '';
-
-			// call the userService function to update
-			Alerta.update($routeParams.Alerta_id, vm.alertaData)
-				.success(function(data) {
-					vm.processing = false;
-
-					// clear the form
-					vm.alertaData = {};
-
-					// bind the message from our API to vm.message
-					vm.message = data.message;
-				});
+	.filter('pagination', function() {
+		return function(data, start) {
+			return data.slice(start);
 		};
-
 	})
 
 	.controller('alertaTipoController', function(Alerta) {
 		var vm = this;
+		vm.pageSize = 10;
+		vm.currentPage = 1;
 		// variable to hide/show elements of the view
 		vm.type = 'tipo';
 		vm.tipoAlerta = function() {
@@ -93,8 +68,16 @@ angular.module('alertaCtrl', ['alertaService'])
 		};
 	})
 
+	.filter('pagination', function() {
+		return function(data, start) {
+			return data.slice(start);
+		};
+	})
+
 	.controller('alertaDeviceController', function(Alerta) {
 		var vm = this;
+		vm.pageSize = 10;
+		vm.currentPage = 1;
 		// variable to hide/show elements of the view
 		vm.type = 'device';
 		vm.deviceAlerta = function() {
@@ -114,8 +97,16 @@ angular.module('alertaCtrl', ['alertaService'])
 		};
 	})
 
+	.filter('pagination', function() {
+		return function(data, start) {
+			return data.slice(start);
+		};
+	})
+
 	.controller('alertaFechaController', function(Alerta) {
 		var vm = this;
+		vm.pageSize = 10;
+		vm.currentPage = 1;
 		// variable to hide/show elements of the view
 		vm.type = 'fecha';
 		vm.fechaAlerta = function() {
@@ -132,5 +123,11 @@ angular.module('alertaCtrl', ['alertaService'])
 					vm.alertaData = {};
 					vm.alertas = data;
 				});
+		};
+	})
+
+	.filter('pagination', function() {
+		return function(data, start) {
+			return data.slice(start);
 		};
 	});

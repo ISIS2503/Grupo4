@@ -1,4 +1,4 @@
-angular.module('sensorCtrl', ['sensorService'])
+angular.module('sensorCtrl', ['sensorService', 'ui.bootstrap'])
 
 	.controller('sensorController', function(Sensor) {
 
@@ -6,6 +6,8 @@ angular.module('sensorCtrl', ['sensorService'])
 
 		// set a processing variable to show loading things
 		vm.processing = true;
+		vm.currentPage = 1;
+		vm.pageSize = 5;
 
 		// grab all the sensores at page load
 		Sensor.all()
@@ -33,8 +35,13 @@ angular.module('sensorCtrl', ['sensorService'])
 							vm.processing = false;
 							vm.sensores = data;
 						});
-
 				});
 		};
 
+	})
+
+	.filter('pagination', function() {
+		return function(data, start) {
+			return data.slice(start);
+		};
 	});

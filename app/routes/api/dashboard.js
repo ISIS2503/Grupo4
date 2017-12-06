@@ -51,7 +51,7 @@ module.exports = function(app, express) {
 
 	apiRouter.route('/alertas/tipo')
 		.post(function(req, res) {
-			Alerta.find({ tipoAlerta: req.body.tipo }, function(err, alerta) {
+			Alerta.find({ tipoAlerta: req.body.tipo }, null, { sort: { fecha: -1 } }, function(err, alerta) {
 				if (err) res.send(err);
 				res.json(alerta);
 			});
@@ -59,16 +59,15 @@ module.exports = function(app, express) {
 
 	apiRouter.route('/alertas/fecha')
 		.post(function(req, res) {
-			Alerta.find({ fecha: req.body.fecha }, function(err, alerta) {
+			Alerta.find({ fecha: req.body.fecha }, null, { sort: { fecha: -1 } }, function(err, alerta) {
 				if (err) res.send(err);
-				console.log(alerta);
 				res.json(alerta);
 			});
 		});
 
 	apiRouter.route('/alertas/device')
 		.post(function(req, res) {
-			Alerta.find({ dispositivoAlerta: req.body.device }, function(err, alerta) {
+			Alerta.find({ dispositivoAlerta: req.body.device }, null, { sort: { fecha: -1 } }, function(err, alerta) {
 				if (err) res.send(err);
 				res.json(alerta);
 			});
@@ -77,7 +76,7 @@ module.exports = function(app, express) {
 	apiRouter.route('/alertas')
 
 		.get(function(req, res) {
-			Alerta.find({}, function(err, alertas) {
+			Alerta.find({}, null, { sort: { fecha: -1 } }, function(err, alertas) {
 				if (err) res.send(err);
 				res.json(alertas);
 			});
@@ -116,7 +115,7 @@ module.exports = function(app, express) {
 
 	apiRouter.route('/reportes/fecha')
 		.post(function(req, res) {
-			Reporte.find({ fecha: req.body.fecha }, function(err, reportes) {
+			Reporte.find({ fecha: req.body.fecha }, null, { sort: { fecha: -1 } }, function(err, reportes) {
 				if (err) res.send(err);
 				res.json(reportes);
 			});
@@ -221,7 +220,7 @@ module.exports = function(app, express) {
 					message: 'No estás autorizado.'
 				});
 			} else {
-				Reporte.find({}, function(err, reportes) {
+				Reporte.find({}, null, { sort: { fecha: -1 } }, function(err, reportes) {
 					if (err) res.send(err);
 					res.json(reportes);
 				});
